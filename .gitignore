@@ -12,7 +12,12 @@ __pycache__/
 
 # Log runtime Odoo dari docker-env (Mode B/C/D, lihat USAGE_GUIDE.md §5 soal --logfile) — noise
 # operasional per-run, bukan deliverable.
+# CATATAN (ditemukan project ini, 2026-08-24): pattern asli `docker-env/logs/` cuma match kalau
+# docker-env persis di root repo — TIDAK match struktur nyata `doc-dev/migration_X_Y/docker-env/logs/`
+# (docker-env dua level lebih dalam) karena pattern dengan `/` di tengah itu anchored ke root
+# .gitignore, bukan "any depth". Fix: pakai `**/` eksplisit supaya match di kedalaman manapun.
 docker-env/logs/
+**/docker-env/logs/
 
 # Command-log hook Claude Code CLI (lihat templates/cli-config/settings.json.template) — jejak
 # operasional sesi CLI, bukan bagian dokumentasi migrasi.

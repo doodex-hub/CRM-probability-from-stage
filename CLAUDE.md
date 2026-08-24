@@ -94,7 +94,7 @@ Cross-cutting (direkomendasikan): `PROMPT_LOG.md` dan `FINDINGS.md` di root `doc
 
 ## Status saat ini
 
-Step 4 — Spec Completeness Review: **✅ Lulus** (13 elemen source module dicek, 0 gap teknis). Step 2 (Diff Analysis) dan 3 (Migration Spec) sudah ditulis lengkap sebagai prasyarat. Risiko keseluruhan hasil Step 2: **Rendah** — tidak ada Critical Migration Blocker, cuma 1 perubahan kode direkomendasikan (`group_operator`→`aggregator`, DIFF-01). Siap lanjut Step 5 — Acceptance Criteria & Test Plan.
+Step 6 — Code Migration: **✅ selesai** — semua fase A1-C1 relevan sudah dikerjakan (A2/A3/B2/C2/D1/D2/E/F N/A per Applicability Check), G1 install test **PASS** nyata via Docker (`odoo:18.0`, 0 error/warning di log lengkap). Kode target-codebase sudah berisi 2 perubahan: `__manifest__.py` versi `18.0.1.0`, `models/crm_lead.py` `aggregator="avg"`, plus `README.md` compat string. Step 5 (Acceptance Criteria: 16 AC, Test Plan) juga sudah ditulis lengkap. Step 7 N/A (port kode saja). Siap lanjut Step 8 — Code Review (gate).
 
 ### Status per Step
 
@@ -103,10 +103,10 @@ Step 4 — Spec Completeness Review: **✅ Lulus** (13 elemen source module dice
 | 1 | Intake & Scope | `01a_MIGRATION_INTAKE.md`, `01b_BASELINE_SPEC.md` | ✔️ Disetujui/lulus gate | ✔️ commit `eae7dc6` |
 | 2 | Diff & Compatibility Analysis | `02_DIFF_ANALYSIS.md` | ✅ Selesai ditulis | Tidak ada gate formal |
 | 3 | Migration Spec (teknis) | `03_MIGRATION_SPEC.md` | ✅ Selesai ditulis | — |
-| 4 | Spec Completeness Review | `04_SPEC_COMPLETENESS_REVIEW.md` | ✔️ Lulus gate | ✔️ (commit menyusul) |
-| 5 | Acceptance Criteria & Test Plan | `05a_MIGRATION_ACCEPTANCE_CRITERIA.md`, `05b_TEST_PLAN_MIGRATION.md` | ⬜ Belum mulai | — |
-| 6 | Code Migration | kode `target-codebase` + `06c_IMPLEMENTATION_LOG.md` | ⬜ Belum mulai | — |
-| 7 | Data Migration Scripts | — (n/a, port kode saja) | — | — |
+| 4 | Spec Completeness Review | `04_SPEC_COMPLETENESS_REVIEW.md` | ✔️ Lulus gate | ✔️ commit `773f51a` |
+| 5 | Acceptance Criteria & Test Plan | `05a_MIGRATION_ACCEPTANCE_CRITERIA.md`, `05b_TEST_PLAN_MIGRATION.md` | ✅ Selesai ditulis (16 AC) | — |
+| 6 | Code Migration | kode `target-codebase` + `06c_IMPLEMENTATION_LOG.md` | ✅ Selesai, G1 Pass | — (commit menyusul) |
+| 7 | Data Migration Scripts | — (n/a, port kode saja) | N/A | — |
 | 8 | Code Review | `08_CODE_REVIEW.md` | ⬜ Belum mulai | — |
 | 9 | Dev Testing | `09_DEV_TESTING.md` | ⬜ Belum mulai | — |
 | 10 | QA Testing | `10_BUSINESS_FLOW_MIGRATION.md` | ⬜ Belum mulai | — |

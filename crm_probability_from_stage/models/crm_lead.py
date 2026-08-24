@@ -7,7 +7,7 @@ class CrmLead(models.Model):
 
 
     probability = fields.Float(
-        'Probability', group_operator="avg", copy=False,
+        'Probability', aggregator="avg", copy=False,
         related='stage_id.probability', readonly=False, store=True, depends=['stage_id.probability'])
     revenue_probability = fields.Float('Probability Revenue', default=0.0, store=True, compute="_compute_revenue_probability")
 

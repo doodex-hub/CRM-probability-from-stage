@@ -1,0 +1,41 @@
+# Docker Environment — crm_probability_from_stage migration (17.0 -> 18.0)
+# Instansiasi dari migration-tool/templates/docker-compose.yml.template, disederhanakan:
+# modul ini TIDAK punya Tour test/Owl-JS (Fase E/F N/A, dikonfirmasi 01a_MIGRATION_INTAKE.md §2b)
+# jadi pakai `image: odoo:18.0` langsung, skip Dockerfile/Chrome. Cuma service target (G1 install
+# test) — project ini (CLI + Mode Git) independen dari project resmi sebelumnya
+# (CRM-probability-from-stage_18), pakai nama project + port berbeda supaya tidak bentrok kalau
+# containernya kebetulan masih ada.
+
+name: crm_probability_from_stage_17_18_cli
+
+services:
+  db_target:
+    image: postgres:15
+    environment:
+      POSTGRES_USER: odoo
+      POSTGRES_PASSWORD: odoo
+      POSTGRES_DB: postgres
+    volumes:
+      - target_db_data:/var/lib/postgresql/data
+
+  odoo_target:
+    image: odoo:18.0
+    depends_on:
+      - db_target
+    ports:
+      - "8278:8069"
+    environment:
+      HOST: db_target
+      USER: odoo
+      PASSWORD: odoo
+    volumes:
+      - D:/Kuncoro/doodex/repo/CRM-probability-from-stage-migration-18/crm_probability_from_stage:/mnt/extra-addons/crm_probability_from_stage
+      - ./logs:/var/log/odoo
+    command: >
+      odoo -d target_db -i crm_probability_from_stage
+      --addons-path=/usr/lib/python3/dist-packages/odoo/addons,/mnt/extra-addons
+      --logfile=/var/log/odoo/odoo_target.log
+      --stop-after-init
+
+volumes:
+  target_db_data:

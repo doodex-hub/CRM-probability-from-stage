@@ -54,7 +54,7 @@ This module allows for the manual assignment of probability values to each stage
 For how to use this module you can go to here
 
 ## Compatibility
-Odoo version: 17.0
+Odoo version: 18.0
 
 ## License
 This module is licensed under [LGPLv3 licensed](./LICENSE)
