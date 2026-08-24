@@ -13,6 +13,7 @@
 | MF-01 | `security/ir.model.access.csv` rusak/tidak terpakai | 1 | `[DIWARISI-SOURCE]` | Rendah | ✅ RESOLVED — dipertahankan apa adanya, disetujui dev 2026-08-24 |
 | MF-02 | Interaksi related-field `probability` vs override PLS (`_compute_probabilities`) | 1 | `[DIWARISI-SOURCE]` | Sedang | ✅ CONFIRMED — didokumentasikan BSL-006/007, jadi basis test plan Step 5 |
 | MF-03 | `_compute_is_automated_probability` tidak depends ke `ir.config_parameter` toggle | 1 | `[DIWARISI-SOURCE]` | Rendah | ✅ RESOLVED — konsekuensi mekanisme `@api.depends`, dipertahankan (BSL-005) |
+| MF-04 | BSL-001 salah — storage `ir.config_parameter` diasumsikan simetris string, ternyata asimetris | 9 | `[GAP-MIGRASI]` (koreksi dokumentasi, bukan bug modul) | Rendah | ✅ RESOLVED — ditemukan dari test gagal (run #1), `01b_BASELINE_SPEC.md` BSL-001 dikoreksi, test diperbaiki (run #2 pass) |
 
 ---
 
@@ -51,3 +52,15 @@
 **Dampak:** Quirk/bug ringan yang sudah ada di source 17.0 — admin yang mengubah toggle mungkin tidak langsung melihat efeknya di lead existing sampai ada trigger lain. Bukan risiko data-loss/crash.
 **Rekomendasi:** Pertahankan apa adanya (larangan "perbaiki bug source").
 **Keputusan pemilik modul:** Disetujui dev saat sign-off Step 1 (2026-08-24) — dipertahankan.
+
+---
+
+### MF-04 — BSL-001 salah: storage `ir.config_parameter` diasumsikan simetris string, ternyata asimetris
+**Ditemukan di:** Step 9 (2026-08-24)
+**Tag:** `[GAP-MIGRASI]` (koreksi dokumentasi baseline spec, bukan bug modul — modul-nya sendiri benar, cuma klaim `01b_BASELINE_SPEC.md` yang salah)
+**Ref:** BSL-001 (`01b_BASELINE_SPEC.md`), CAND-07 (`migration-tool/migration-records/crm_probability_from_stage_17_18/SUMMARY.md`)
+**Lokasi:** Test `test_toggle_saves_config_parameter` (run #1) gagal: `AssertionError: False != 'False'`
+**Deskripsi:** Baseline spec awal mengklaim toggle tersimpan sebagai string `'True'`/`'False'` simetris. Ternyata `ir.config_parameter.set_param(key, False)` MENGHAPUS key (perilaku core Odoo untuk value falsy apapun), jadi `get_param(key, False)` mengembalikan default Python `False`, bukan string.
+**Dampak:** Tidak ada dampak ke modul (behavior modul sendiri tetap benar, sudah pakai `get_param(key, False)` dengan default yang tepat) — cuma dokumentasi baseline spec yang perlu dikoreksi supaya tidak menyesatkan test/keputusan berikutnya.
+**Rekomendasi:** Tidak ada tindakan kode. Baseline spec sudah dikoreksi langsung.
+**Keputusan pemilik modul:** Tidak perlu keputusan — koreksi murni faktual, sudah diterapkan.
