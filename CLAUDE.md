@@ -94,7 +94,7 @@ Cross-cutting (direkomendasikan): `PROMPT_LOG.md` dan `FINDINGS.md` di root `doc
 
 ## Status saat ini
 
-Step 9 — Dev Testing: **✅ Lulus gate** — 11 test baru ditulis (source 17.0 tidak punya test sama sekali), diaudit `ast` (0 stub), dijalankan nyata via Docker (`MSYS_NO_PATHCONV=1` fix diterapkan). Run #1: 1 gagal (bug di test sendiri, bukan modul — `ir.config_parameter` storage asimetris, BSL-001 dikoreksi). Run #2: **0 failed, 0 error(s) of 11 tests**, dicocokkan 11 baris "Starting Test" = 11 method (bukan false-pass). Siap lanjut Step 10 — QA Testing.
+Step 10 — QA Testing: **🔄 draft ditulis, MENUNGGU dev** — 4 skenario (S-01..S-04) + `human_qa/` 4 file. AI-interaktif (Claude Browser) dicoba, GAGAL baca DOM webclient (data poin ke-4, konsisten lesson sebelumnya). Server live sudah disiapkan (`http://localhost:8278`, admin/admin) untuk dev jalankan S-01..S-04 manual — AI tidak mengklaim gate ini lulus sepihak. Semua temuan lain (kode/test) sudah 100% terverifikasi Step 6-9.
 
 ### Status per Step
 
@@ -108,8 +108,8 @@ Step 9 — Dev Testing: **✅ Lulus gate** — 11 test baru ditulis (source 17.0
 | 6 | Code Migration | kode `target-codebase` + `06c_IMPLEMENTATION_LOG.md` | ✅ Selesai, G1 Pass | ✔️ commit `954eb64` |
 | 7 | Data Migration Scripts | — (n/a, port kode saja) | N/A | — |
 | 8 | Code Review | `08_CODE_REVIEW.md` | ✔️ Lulus gate | ✔️ commit `c1cbf18` |
-| 9 | Dev Testing | `09_DEV_TESTING.md` | ✔️ Lulus gate | ✔️ (commit menyusul) |
-| 10 | QA Testing | `10_BUSINESS_FLOW_MIGRATION.md` | ⬜ Belum mulai | — |
+| 9 | Dev Testing | `09_DEV_TESTING.md` | ✔️ Lulus gate | ✔️ commit `2e72ce2` |
+| 10 | QA Testing | `10_BUSINESS_FLOW_MIGRATION.md` | 🔄 Draft, menunggu dev jalankan manual | ⏳ Menunggu dev |
 | 11 | UAT Sign-off | `11_UAT_CHECKLIST.md` | ⬜ Belum mulai | — |
 
 Legenda status: ⬜ Belum mulai · 🔄 Sedang dikerjakan · ✅ Draft/selesai ditulis · ✔️ Disetujui/lulus gate.
