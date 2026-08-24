@@ -94,16 +94,16 @@ Cross-cutting (direkomendasikan): `PROMPT_LOG.md` dan `FINDINGS.md` di root `doc
 
 ## Status saat ini
 
-Step 1 — Intake & Scope. `01a_MIGRATION_INTAKE.md` dan `01b_BASELINE_SPEC.md` sudah ditulis penuh (12 klaim behavior `BSL-001..016`, semua `[NO-SPEC]` karena tidak ada `FUNCTIONAL_SPEC.md` lama). Menunggu review/sign-off user atas "Ringkasan untuk Review" di kedua dokumen sebelum gate Step 1 ditutup (✔️) dan lanjut Step 2.
+Step 4 — Spec Completeness Review: **✅ Lulus** (13 elemen source module dicek, 0 gap teknis). Step 2 (Diff Analysis) dan 3 (Migration Spec) sudah ditulis lengkap sebagai prasyarat. Risiko keseluruhan hasil Step 2: **Rendah** — tidak ada Critical Migration Blocker, cuma 1 perubahan kode direkomendasikan (`group_operator`→`aggregator`, DIFF-01). Siap lanjut Step 5 — Acceptance Criteria & Test Plan.
 
 ### Status per Step
 
 | # | Step | Dokumen | Status | Gate |
 |---|---|---|---|---|
-| 1 | Intake & Scope | `01a_MIGRATION_INTAKE.md`, `01b_BASELINE_SPEC.md` | ✅ Draft selesai ditulis | ⏳ Menunggu review user |
-| 2 | Diff & Compatibility Analysis | `02_DIFF_ANALYSIS.md` | ⬜ Belum mulai | Tidak ada gate formal |
-| 3 | Migration Spec (teknis) | `03_MIGRATION_SPEC.md` | ⬜ Belum mulai | — |
-| 4 | Spec Completeness Review | `04_SPEC_COMPLETENESS_REVIEW.md` | ⬜ Belum mulai | — |
+| 1 | Intake & Scope | `01a_MIGRATION_INTAKE.md`, `01b_BASELINE_SPEC.md` | ✔️ Disetujui/lulus gate | ✔️ commit `eae7dc6` |
+| 2 | Diff & Compatibility Analysis | `02_DIFF_ANALYSIS.md` | ✅ Selesai ditulis | Tidak ada gate formal |
+| 3 | Migration Spec (teknis) | `03_MIGRATION_SPEC.md` | ✅ Selesai ditulis | — |
+| 4 | Spec Completeness Review | `04_SPEC_COMPLETENESS_REVIEW.md` | ✔️ Lulus gate | ✔️ (commit menyusul) |
 | 5 | Acceptance Criteria & Test Plan | `05a_MIGRATION_ACCEPTANCE_CRITERIA.md`, `05b_TEST_PLAN_MIGRATION.md` | ⬜ Belum mulai | — |
 | 6 | Code Migration | kode `target-codebase` + `06c_IMPLEMENTATION_LOG.md` | ⬜ Belum mulai | — |
 | 7 | Data Migration Scripts | — (n/a, port kode saja) | — | — |
