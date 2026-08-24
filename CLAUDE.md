@@ -94,7 +94,7 @@ Cross-cutting (direkomendasikan): `PROMPT_LOG.md` dan `FINDINGS.md` di root `doc
 
 ## Status saat ini
 
-Step 6 — Code Migration: **✅ selesai** — semua fase A1-C1 relevan sudah dikerjakan (A2/A3/B2/C2/D1/D2/E/F N/A per Applicability Check), G1 install test **PASS** nyata via Docker (`odoo:18.0`, 0 error/warning di log lengkap). Kode target-codebase sudah berisi 2 perubahan: `__manifest__.py` versi `18.0.1.0`, `models/crm_lead.py` `aggregator="avg"`, plus `README.md` compat string. Step 5 (Acceptance Criteria: 16 AC, Test Plan) juga sudah ditulis lengkap. Step 7 N/A (port kode saja). Siap lanjut Step 8 — Code Review (gate).
+Step 8 — Code Review: **✅ Lulus gate** — 0 🔴/🟡, 4 🔵 (semua quirk pre-existing, sudah diputuskan dipertahankan). Gap analysis vs Migration Spec DAN Acceptance Criteria: nol gap. Cek tabrakan method/field dengan core 18.0 (dua arah): aman. Diverifikasi `diff` byte-level source vs target: HANYA 3 file berubah (`__manifest__.py`, `models/crm_lead.py`, `README.md`), persis sesuai spec. Siap lanjut Step 9 — Dev Testing.
 
 ### Status per Step
 
@@ -105,9 +105,9 @@ Step 6 — Code Migration: **✅ selesai** — semua fase A1-C1 relevan sudah di
 | 3 | Migration Spec (teknis) | `03_MIGRATION_SPEC.md` | ✅ Selesai ditulis | — |
 | 4 | Spec Completeness Review | `04_SPEC_COMPLETENESS_REVIEW.md` | ✔️ Lulus gate | ✔️ commit `773f51a` |
 | 5 | Acceptance Criteria & Test Plan | `05a_MIGRATION_ACCEPTANCE_CRITERIA.md`, `05b_TEST_PLAN_MIGRATION.md` | ✅ Selesai ditulis (16 AC) | — |
-| 6 | Code Migration | kode `target-codebase` + `06c_IMPLEMENTATION_LOG.md` | ✅ Selesai, G1 Pass | — (commit menyusul) |
+| 6 | Code Migration | kode `target-codebase` + `06c_IMPLEMENTATION_LOG.md` | ✅ Selesai, G1 Pass | ✔️ commit `954eb64` |
 | 7 | Data Migration Scripts | — (n/a, port kode saja) | N/A | — |
-| 8 | Code Review | `08_CODE_REVIEW.md` | ⬜ Belum mulai | — |
+| 8 | Code Review | `08_CODE_REVIEW.md` | ✔️ Lulus gate | ✔️ (commit menyusul) |
 | 9 | Dev Testing | `09_DEV_TESTING.md` | ⬜ Belum mulai | — |
 | 10 | QA Testing | `10_BUSINESS_FLOW_MIGRATION.md` | ⬜ Belum mulai | — |
 | 11 | UAT Sign-off | `11_UAT_CHECKLIST.md` | ⬜ Belum mulai | — |
