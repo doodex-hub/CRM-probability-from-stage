@@ -94,7 +94,7 @@ Cross-cutting (direkomendasikan): `PROMPT_LOG.md` dan `FINDINGS.md` di root `doc
 
 ## Status saat ini
 
-Step 10 — QA Testing: **✔️ Lulus gate** — 4/4 skenario pass. AI-interactive browser automation (Claude Browser lalu Claude in Chrome) terbukti tidak reliable (baca lengkap di `09_DEV_TESTING.md` "Mode D"), jadi dipindah ke **Mode D (Tour test Odoo native)** — 2 Tour baru (15 langkah, termasuk drag-and-drop kanban dan klik checkbox Settings via Chrome headless asli) sukses 100%, dikombinasikan dengan 11 unit/integration test dari Step 9 (total 13 test, 0 failed/error). Siap lanjut Step 11 — UAT Sign-off.
+Step 11 — UAT Sign-off: **🔄 draft ditulis, MENUNGGU business user asli**. 3 skenario (T-01/T-02/T-03) dengan data dummy konkret, bahasa awam (bukan istilah AC/BSL). Sesuai aturan tool ini, AI TIDAK PERNAH mengisi kolom Actual/Status/Sign-off — WAJIB dijalankan tangan sendiri oleh PM/FA/Sales Manager asli di environment UAT (bukan Administrator). Semua step 1-10 sudah selesai & lulus gate (lihat tabel). **Ini step terakhir sebelum project migrasi ini dianggap tuntas.**
 
 ### Status per Step
 
@@ -108,9 +108,9 @@ Step 10 — QA Testing: **✔️ Lulus gate** — 4/4 skenario pass. AI-interact
 | 6 | Code Migration | kode `target-codebase` + `06c_IMPLEMENTATION_LOG.md` | ✅ Selesai, G1 Pass | ✔️ commit `954eb64` |
 | 7 | Data Migration Scripts | — (n/a, port kode saja) | N/A | — |
 | 8 | Code Review | `08_CODE_REVIEW.md` | ✔️ Lulus gate | ✔️ commit `c1cbf18` |
-| 9 | Dev Testing | `09_DEV_TESTING.md` | ✔️ Lulus gate (13 test, termasuk 2 Tour) | ✔️ commit `2e72ce2` + (update Tour menyusul) |
-| 10 | QA Testing | `10_BUSINESS_FLOW_MIGRATION.md` | ✔️ Lulus gate (4/4 skenario) | ✔️ (commit menyusul) |
-| 11 | UAT Sign-off | `11_UAT_CHECKLIST.md` | ⬜ Belum mulai | — |
+| 9 | Dev Testing | `09_DEV_TESTING.md` | ✔️ Lulus gate (13 test, termasuk 2 Tour) | ✔️ commit `2e72ce2`, `f2afdb5` |
+| 10 | QA Testing | `10_BUSINESS_FLOW_MIGRATION.md` | ✔️ Lulus gate (4/4 skenario) | ✔️ commit `f2afdb5` |
+| 11 | UAT Sign-off | `11_UAT_CHECKLIST.md` | 🔄 Draft, menunggu business user | ⏳ Menunggu user asli — AI tidak boleh isi sign-off |
 
 Legenda status: ⬜ Belum mulai · 🔄 Sedang dikerjakan · ✅ Draft/selesai ditulis · ✔️ Disetujui/lulus gate.
 
