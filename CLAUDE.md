@@ -94,7 +94,9 @@ Cross-cutting (direkomendasikan): `PROMPT_LOG.md` dan `FINDINGS.md` di root `doc
 
 ## Status saat ini
 
-Step 11 — UAT Sign-off: **🔄 draft ditulis, MENUNGGU business user asli**. 3 skenario (T-01/T-02/T-03) dengan data dummy konkret, bahasa awam (bukan istilah AC/BSL). Sesuai aturan tool ini, AI TIDAK PERNAH mengisi kolom Actual/Status/Sign-off — WAJIB dijalankan tangan sendiri oleh PM/FA/Sales Manager asli di environment UAT (bukan Administrator). Semua step 1-10 sudah selesai & lulus gate (lihat tabel). **Ini step terakhir sebelum project migrasi ini dianggap tuntas.**
+Step 11 — UAT Sign-off: **✔️ Ditutup lewat WAIVER eksplisit dev** (kuncoro@doodex.net, 2026-08-26), BUKAN sign-off UAT asli oleh business user (PM/FA/Sales Manager). Dev secara sadar memilih melewati eksekusi manual T-01/T-02/T-03 dan menerima bukti Tour test otomatis (Step 10, Chrome headless asli) sebagai dasar. Dicatat eksplisit di `11_UAT_CHECKLIST.md` supaya tidak menyesatkan pembaca dokumen ini nanti — kalau modul ini akan dipakai instance produksi sungguhan, sign-off asli tetap direkomendasikan sebelum go-live.
+
+**Project migrasi 11-step ini sekarang tuntas** (semua step 1-11 selesai, gate 1/4/8/9/10 lulus asli, gate 11 ditutup via waiver terdokumentasi).
 
 ### Status per Step
 
@@ -110,7 +112,7 @@ Step 11 — UAT Sign-off: **🔄 draft ditulis, MENUNGGU business user asli**. 3
 | 8 | Code Review | `08_CODE_REVIEW.md` | ✔️ Lulus gate | ✔️ commit `c1cbf18` |
 | 9 | Dev Testing | `09_DEV_TESTING.md` | ✔️ Lulus gate (13 test, termasuk 2 Tour) | ✔️ commit `2e72ce2`, `f2afdb5` |
 | 10 | QA Testing | `10_BUSINESS_FLOW_MIGRATION.md` | ✔️ Lulus gate (4/4 skenario) | ✔️ commit `f2afdb5` |
-| 11 | UAT Sign-off | `11_UAT_CHECKLIST.md` | 🔄 Draft, menunggu business user | ⏳ Menunggu user asli — AI tidak boleh isi sign-off |
+| 11 | UAT Sign-off | `11_UAT_CHECKLIST.md` | ✔️ Ditutup via **waiver dev** (bukan UAT asli) | ✔️ (commit menyusul) |
 
 Legenda status: ⬜ Belum mulai · 🔄 Sedang dikerjakan · ✅ Draft/selesai ditulis · ✔️ Disetujui/lulus gate.
 
