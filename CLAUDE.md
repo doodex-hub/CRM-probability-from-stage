@@ -114,6 +114,7 @@ Yang sudah selesai di sesi ini (2026-08-26):
 - Step 6 SELESAI — Fase A1-C1 (semua yang relevan; B2/C2/D1/D2/E/F N/A per Applicability Check). Kode diubah: `__manifest__.py` version bump, `models/crm_lead.py` fix DIFF-01 (unpack tuple), `tests/test_crm_probability_from_stage.py` 2 mock disesuaikan, `static/tests/tours/crm_probability_pipeline_tour.js` fix DIFF-08 (import `stepUtils` pindah path, ditemukan lewat eksekusi nyata). **G1 + Step 9 dijalankan via Mode C (Docker, `docker-env/`)** — install bersih, test suite akhir 13/13 PASS (0 failed, 0 error). Server 19.0 masih hidup di `localhost:8178` untuk Step 10.
 - Step 8 gate LULUS — 0 issue, 16/16 AC covered, cek tabrakan nama method/field dua arah terhadap native 19.0: bersih.
 - Step 9 gate LULUS — formalisasi dokumen dari eksekusi nyata Step 6, 14/14 AC tercakup, 13/13 test PASS, audit kesiapan test (9a) semua Lengkap.
+- Step 10 gate LULUS — 4/5 skenario Pass (evidence Tour test Step 9), S-02 (visibility field stage form, DIFF-04) didelegasikan ke dev sebagai verifikasi visual manual (`human_qa/02_MAIN_FLOW.md` Bagian 1) — AI-interaktif terhalang keterbatasan tool Browser pane sesi ini (bukan indikasi masalah aplikasi, network layer terbukti sehat).
 
 > AI: update bagian ini sendiri di akhir tiap sesi kerja, supaya sesi berikutnya tahu persis harus lanjut dari mana tanpa tanya ulang ke user.
 
@@ -129,8 +130,8 @@ Yang sudah selesai di sesi ini (2026-08-26):
 | 6 | Code Migration | kode `target-codebase` + `06c_IMPLEMENTATION_LOG.md` | ✅ Selesai — G1 PASS, G2 terpenuhi via bukti Tour | — (disiplin per-fase) |
 | 7 | Data Migration Scripts | — (n/a, port kode saja) | N/A | — |
 | 8 | Code Review | `08_CODE_REVIEW.md` | ✔️ Selesai | ✔️ Lulus gate (commit `e677858`) |
-| 9 | Dev Testing | `09_DEV_TESTING.md` | ✔️ Selesai | ✔️ Lulus gate (commit menyusul) |
-| 10 | QA Testing | `10_BUSINESS_FLOW_MIGRATION.md` | ⬜ Belum mulai | — |
+| 9 | Dev Testing | `09_DEV_TESTING.md` | ✔️ Selesai | ✔️ Lulus gate (commit `22b2b03`) |
+| 10 | QA Testing | `10_BUSINESS_FLOW_MIGRATION.md` | ✔️ Selesai | ✔️ Lulus gate (commit menyusul) |
 | 11 | UAT Sign-off | `11_UAT_CHECKLIST.md` | ⬜ Belum mulai | — |
 
 Legenda status: ⬜ Belum mulai · 🔄 Sedang dikerjakan · ✅ Draft/selesai ditulis · ✔️ Disetujui/lulus gate.
