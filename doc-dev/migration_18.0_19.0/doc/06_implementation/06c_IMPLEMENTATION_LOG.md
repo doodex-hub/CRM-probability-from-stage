@@ -30,7 +30,7 @@ Detail lengkap: `06a_CODE_MIGRATION_PHASES.md`.
 |---|---|---|
 | A1 | ✅ | 2026-08-26 |
 | A2 | N/A (sudah selesai migrasi 17→18) | 2026-08-26 |
-| G1 (checkpoint Fase A) | ⏳ Menunggu konfirmasi mode dev | — |
+| G1 (checkpoint Fase A) | ✅ PASS (Mode C) | 2026-08-26 |
 | A3 | N/A (tidak ada perubahan wajib) | 2026-08-26 |
 | A4 | ✅ | 2026-08-26 |
 | A5 | ✅ | 2026-08-26 |
@@ -42,13 +42,18 @@ Detail lengkap: `06a_CODE_MIGRATION_PHASES.md`.
 | D2 | N/A | — |
 | E | N/A | — |
 | F | N/A | — |
-| G2 (validasi akhir/runtime) | ⏳ Menunggu G1 | — |
+| G2 (validasi akhir/runtime) | ✅ Terpenuhi lewat bukti Tour test Step 9 (lihat entri "Fix DIFF-08" di bawah) | 2026-08-26 |
 
 ## Riwayat Percobaan G1 (Install Test)
 
+> Mode C (AI jalankan langsung) — Docker 29.6.1 terdeteksi tersedia di sesi Claude Code CLI ini, dev
+> mengkonfirmasi eksplisit Mode C dipilih (bukan A/B). Image `odoo:19.0` + Chrome headless (google-chrome-stable,
+> resep dari `Dockerfile.template`, dibutuhkan untuk Tour test). `docker-env/docker-compose.yml` — target-only
+> (`odoo_target`+`db_target`), source (18.0) tidak di-spin-up (baseline sudah tervalidasi dari pembacaan kode).
+
 | # | Dijalankan setelah fase | Mode | Hasil | Error (kalau fail) | Tanggal |
 |---|---|---|---|---|---|
-| — | — | — | Belum dijalankan — menunggu konfirmasi dev soal mode eksekusi (A/B/C) | — | — |
+| 1 | A5 (fix DIFF-01 sudah diterapkan) | C | ✅ Pass | — (45 module loaded, 0 error/critical di log, `crm_probability_from_stage` loaded 0.32s/132 queries) | 2026-08-26 |
 
 ---
 
@@ -134,12 +139,27 @@ Detail lengkap: `06a_CODE_MIGRATION_PHASES.md`.
 - **Risiko:** LOW, tapi WAJIB — tanpa ini kedua test jadi false-negative regression guard untuk DIFF-01 (lihat `05b_TEST_PLAN_MIGRATION.md`)
 - **Status:** ✅ Selesai
 
+## [G1 + Step 9] Eksekusi Docker Nyata (Mode C) — Install Test + Full Test Suite
+
+- **Scope:** `docker-env/Dockerfile.target`, `docker-env/docker-compose.yml` (baru), eksekusi terhadap `crm_probability_from_stage` di image `odoo:19.0`
+- **Item spec (ref):** `06a_CODE_MIGRATION_PHASES.md` Checkpoint G1 + Fase G2; `05b_TEST_PLAN_MIGRATION.md` Step 9
+- **Aksi:**
+  - Docker environment disiapkan: `odoo:19.0` + Chrome headless (resep `google-chrome-stable`, dibutuhkan 2 Tour test modul ini), target-only (tidak spin up 18.0 — baseline sudah tervalidasi statis).
+  - **Percobaan 1** (`docker compose up -d --build`): install bersih, G1 PASS (lihat tabel di atas).
+  - **Percobaan test suite 1** (`-u ... --test-enable --test-tags`, logfile `step9_test.log`): hasil **1 failed, 1 error dari 13 test** — KEDUA gagal di test Tour (`test_crm_probability_pipeline_tour` ERROR, `test_crm_probability_settings_tour` FAIL). Root cause diselidiki: `import { stepUtils } from "@web_tour/tour_service/tour_utils"` di `crm_probability_pipeline_tour.js` gagal resolve — file itu sudah pindah ke `@web_tour/tour_utils` di 19.0 (dikonfirmasi grep source `enterprise19.0/odoo/addons/web_tour/static/src/tour_utils.js` vs `odoo18/addons/web_tour/static/src/tour_service/tour_utils.js`, dan cross-check ke tour asli `crm` 19.0 yang sudah pakai path baru). Kegagalan resolve modul ini membuat SELURUH bundle `web.assets_tests` gagal load, jadi KEDUA tour ikut gagal walau cuma satu file yang salah import — **dicatat sebagai DIFF-08 baru** di `02_diff/02_DIFF_ANALYSIS.md`.
+  - **Fix diterapkan:** `static/tests/tours/crm_probability_pipeline_tour.js` — import diubah ke `@web_tour/tour_utils`.
+  - **Percobaan test suite 2** (logfile `step9_test2.log`): hasil **0 failed, 2 error** — FAIL sudah hilang, tapi 2 ERROR baru muncul: `web.assets_web.min.css`/`.min.js` return HTTP 500 (`FileNotFoundError` di filestore Odoo). **Diagnosis:** ini artefak setup Docker sesi ini sendiri (bukan temuan migrasi) — `docker-compose.yml` awal tidak memberi volume persisten untuk `/var/lib/odoo` (filestore), jadi tiap `docker compose run --rm` (kontainer efemeral terpisah dari kontainer `up` yang persisten) punya filesystem lokalnya sendiri; `ir.attachment` (cache asset bundle) yang ditulis kontainer A tidak terlihat kontainer B walau sama-sama connect ke `db_target` yang sama. **Fix:** tambah named volume `target_filestore:/var/lib/odoo` di `docker-compose.yml`, lalu `docker compose down -v` + `up -d` (reset bersih DB+filestore selaras) sebelum re-test.
+  - **Percobaan test suite 3** (logfile `step9_test3.log`, setelah reset volume): hasil **0 failed, 0 error dari 13 test** — SEMUA PASS (12 unit/integration `test_crm_probability_from_stage.py` + 2 Tour `test_crm_probability_tour.py`).
+- **Secara eksplisit TIDAK dilakukan:** Tidak ada perubahan ke `crm_probability_settings_tour.js` (file itu sendiri tidak pernah salah — gagalnya kolateral dari bundle, bukan importnya sendiri). Tidak ada perubahan business logic apapun dari temuan DIFF-08 — murni path import.
+- **Risiko:** DIFF-08 sendiri: sudah LOW setelah fix+verifikasi. Setup Docker filestore: N/A untuk kode modul (isu tooling sesi ini, tidak masuk deliverable migrasi).
+- **Status:** ✅ Selesai — G1 PASS, Step 9 full suite PASS (13/13), server 19.0 tetap hidup di `localhost:8178` untuk Step 10.
+
 ---
 
 ## Temuan di Luar Spec (kalau ada)
 
-- [x] Tidak ada — semua perubahan tertelusuri ke `03_MIGRATION_SPEC.md`/`02_DIFF_ANALYSIS.md`.
+- [x] Ada satu — DIFF-08 (import `stepUtils` pindah path) TIDAK terdeteksi di analisis statis Step 2/3, baru ketahuan dari eksekusi Step 9 nyata. **Ditangani langsung** (bukan ditunda balik ke step 2/3 secara formal) karena scope-nya sempit (1 baris import, sudah tercakup pola "Python API Compatibility"/A5 secara analog untuk JS) dan sudah didokumentasikan retroaktif di `02_DIFF_ANALYSIS.md` (DIFF-08) + `03_MIGRATION_SPEC.md` §2 sebelum dinyatakan selesai di sini — konsisten prinsip "boleh pilih sendiri kalau ada rekomendasi jelas berisiko rendah, dokumentasikan, lanjut" (`CLAUDE.md` "Eksekusi Berkelanjutan").
 
 ## Kontribusi ke Knowledge Base
 
-- [x] Ada — sudah dicatat SEBELUM Step 6 dimulai (di Step 2, lihat `02_DIFF_ANALYSIS.md` §3): `migration-tool/migration-records/crm_probability_from_stage_18_19/SUMMARY.md` CAND-01 (`_pls_get_naive_bayes_probabilities()` tuple return) dan CAND-02 (`crm.stage.team_id`→`team_ids` + `write()` baru). Tidak ada temuan BARU yang muncul selama eksekusi Fase A1-C1 di luar yang sudah tercatat Step 2 — implementasi berjalan persis sesuai `03_MIGRATION_SPEC.md`.
+- [x] Ada — dicatat di Step 2 (`02_DIFF_ANALYSIS.md` §3): `migration-tool/migration-records/crm_probability_from_stage_18_19/SUMMARY.md` CAND-01 (`_pls_get_naive_bayes_probabilities()` tuple return) dan CAND-02 (`crm.stage.team_id`→`team_ids` + `write()` baru). **Ditambah CAND-03 di Step 6** (temuan baru dari eksekusi nyata): `web_tour` `tour_utils.js` pindah path (DIFF-08) — general untuk modul manapun dengan Tour test yang import `stepUtils` langsung. Detail lengkap: `migration-records/crm_probability_from_stage_18_19/SUMMARY.md`.

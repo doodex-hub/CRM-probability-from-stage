@@ -8,7 +8,7 @@
 // "Probability Revenue" di list view Pipeline menghitung benar (AC-02-01, AC-03-01, AC-03-03).
 
 import { registry } from "@web/core/registry";
-import { stepUtils } from "@web_tour/tour_service/tour_utils";
+import { stepUtils } from "@web_tour/tour_utils";
 
 registry.category("web_tour.tours").add("crm_probability_pipeline_tour", {
     url: "/odoo",
