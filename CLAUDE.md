@@ -110,6 +110,7 @@ Yang sudah selesai di sesi ini (2026-08-26):
 - `02_DIFF_ANALYSIS.md` ditulis — 1 temuan kritis (DIFF-01: `_pls_get_naive_bayes_probabilities()` return signature berubah jadi tuple di 19.0, breaking untuk override `_compute_probabilities()` modul ini) + 6 temuan minor/informational. Kandidat knowledge base ditulis ke `migration-tool/migration-records/crm_probability_from_stage_18_19/SUMMARY.md`.
 - `03_MIGRATION_SPEC.md` ditulis — strategi per file, fix DIFF-01 di `crm_lead.py` (unpack tuple), manifest version bump, penyesuaian mock 2 test existing.
 - `04_SPEC_COMPLETENESS_REVIEW.md` ditulis — 21 elemen source module dienumerasi, 0 gap, gate LULUS.
+- `05a_MIGRATION_ACCEPTANCE_CRITERIA.md`/`05b_TEST_PLAN_MIGRATION.md` ditulis — carry-over AC-01..04 (16 AC) dari migrasi 17→18, AC-02-04/05 ditandai eksplisit sebagai regression guard utama untuk DIFF-01.
 
 > AI: update bagian ini sendiri di akhir tiap sesi kerja, supaya sesi berikutnya tahu persis harus lanjut dari mana tanpa tanya ulang ke user.
 
@@ -120,8 +121,8 @@ Yang sudah selesai di sesi ini (2026-08-26):
 | 1 | Intake & Scope | `01a_MIGRATION_INTAKE.md`, `01b_BASELINE_SPEC.md` | ✔️ Selesai | ✔️ Lulus gate (commit `51ed4a3`) |
 | 2 | Diff & Compatibility Analysis | `02_DIFF_ANALYSIS.md` | ✅ Selesai ditulis | Tidak ada gate formal |
 | 3 | Migration Spec (teknis) | `03_MIGRATION_SPEC.md` | ✅ Selesai ditulis | — |
-| 4 | Spec Completeness Review | `04_SPEC_COMPLETENESS_REVIEW.md` | ✔️ Selesai | ✔️ Lulus gate (commit menyusul) |
-| 5 | Acceptance Criteria & Test Plan | `05a_MIGRATION_ACCEPTANCE_CRITERIA.md`, `05b_TEST_PLAN_MIGRATION.md` | ⬜ Belum mulai | — |
+| 4 | Spec Completeness Review | `04_SPEC_COMPLETENESS_REVIEW.md` | ✔️ Selesai | ✔️ Lulus gate (commit `848ba86`) |
+| 5 | Acceptance Criteria & Test Plan | `05a_MIGRATION_ACCEPTANCE_CRITERIA.md`, `05b_TEST_PLAN_MIGRATION.md` | ✅ Selesai ditulis | — |
 | 6 | Code Migration | kode `target-codebase` + `06c_IMPLEMENTATION_LOG.md` | ⬜ Belum mulai | — |
 | 7 | Data Migration Scripts | — (n/a, port kode saja) | N/A | — |
 | 8 | Code Review | `08_CODE_REVIEW.md` | ⬜ Belum mulai | — |
