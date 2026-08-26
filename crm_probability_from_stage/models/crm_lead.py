@@ -33,7 +33,9 @@ class CrmLead(models.Model):
 
     @api.depends(lambda self: ['stage_id', 'team_id'] + self._pls_get_safe_fields())
     def _compute_probabilities(self):
-        lead_probabilities = self._pls_get_naive_bayes_probabilities()
+        # 19.0: _pls_get_naive_bayes_probabilities() now returns (lead_probabilities, tooltip_data)
+        # on its main success path instead of the dict alone (18.0 behavior) - unpack accordingly.
+        lead_probabilities, _tooltip_data = self._pls_get_naive_bayes_probabilities()
         for lead in self:
             if lead.id in lead_probabilities:
                 was_automated = lead.active and lead.is_automated_probability

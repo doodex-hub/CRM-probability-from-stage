@@ -5,9 +5,9 @@ from odoo.tests.common import TransactionCase, tagged
 
 @tagged('post_install', '-at_install')
 class TestCrmProbabilityFromStage(TransactionCase):
-    """Baseline-equivalence tests — 18.0 must reproduce 17.0 behavior documented in
-    doc-dev/migration_17.0_18.0/doc/01_intake/01b_BASELINE_SPEC.md (BSL-NNN) and
-    doc-dev/migration_17.0_18.0/doc/05_acceptance/05a_MIGRATION_ACCEPTANCE_CRITERIA.md (AC-NN-NN).
+    """Baseline-equivalence tests — 19.0 must reproduce 18.0 behavior documented in
+    doc-dev/migration_18.0_19.0/doc/01_intake/01b_BASELINE_SPEC.md (BSL-NNN) and
+    doc-dev/migration_18.0_19.0/doc/05_acceptance/05a_MIGRATION_ACCEPTANCE_CRITERIA.md (AC-NN-NN).
     """
 
     @classmethod
@@ -95,7 +95,7 @@ class TestCrmProbabilityFromStage(TransactionCase):
 
         with patch.object(
             type(lead), '_pls_get_naive_bayes_probabilities',
-            return_value={lead.id: 99.0},
+            return_value=({lead.id: 99.0}, {}),
         ):
             lead._compute_probabilities()
 
@@ -113,7 +113,7 @@ class TestCrmProbabilityFromStage(TransactionCase):
 
         with patch.object(
             type(lead), '_pls_get_naive_bayes_probabilities',
-            return_value={lead.id: 42.0},
+            return_value=({lead.id: 42.0}, {}),
         ):
             lead._compute_probabilities()
 
