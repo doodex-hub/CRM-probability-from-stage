@@ -1,0 +1,17 @@
+# Dockerfile.target — crm_probability_from_stage, image Odoo 18.0
+# Instansiasi dari migration-tool/templates/Dockerfile.template untuk Step 10 Mode D
+# (Tour headless via Chrome asli) — dibutuhkan karena Claude in Chrome/Claude Browser
+# terbukti tidak reliable untuk klik interaktif di webclient Odoo pada sesi ini
+# (lihat 10_BUSINESS_FLOW_MIGRATION.md). Resep google-chrome-stable ini sudah terbukti
+# jalan penuh di project doc-dev-backfill (purchase_product_optional).
+
+FROM odoo:18.0
+USER root
+RUN apt-get update && apt-get install -y --no-install-recommends wget gnupg ca-certificates \
+    && wget -q -O - https://dl.google.com/linux/linux_signing_key.pub | gpg --dearmor -o /usr/share/keyrings/google-chrome.gpg \
+    && echo "deb [arch=amd64 signed-by=/usr/share/keyrings/google-chrome.gpg] http://dl.google.com/linux/chrome/deb/ stable main" > /etc/apt/sources.list.d/google-chrome.list \
+    && apt-get update \
+    && apt-get install -y --no-install-recommends google-chrome-stable \
+    && rm -rf /var/lib/apt/lists/* \
+    && (pip3 install --break-system-packages websocket-client || pip3 install websocket-client)
+USER odoo

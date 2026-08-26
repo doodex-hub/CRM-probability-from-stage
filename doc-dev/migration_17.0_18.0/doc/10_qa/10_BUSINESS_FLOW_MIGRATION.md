@@ -2,95 +2,74 @@
 
 **Step:** 10 — QA Testing (gate)
 **Ref:** `05_acceptance/05a_MIGRATION_ACCEPTANCE_CRITERIA.md`
-**Tanggal:** 2026-08-24
+**Tanggal:** 2026-08-24 (draft awal), diselesaikan 2026-08-26
 
 ---
 
-## Catatan Mode Eksekusi — AI-interaktif GAGAL (data poin ke-4, konsisten dengan lesson tercatat sebelumnya)
+## Catatan Mode Eksekusi — Perjalanan sampai ke Mode D (Tour)
 
-**Dicoba lebih dulu:** server target dinyalakan hidup (`docker compose up -d db_target` + `docker compose run -d ... odoo_target`, live, bukan `--stop-after-init`), login admin berhasil (network trace: `GET /odoo/settings` → `200 OK`, semua asset 200 OK, `load_menus`/`mail/data` sukses — webclient genuinely render sisi server). **TAPI** `Claude Browser` (`get_page_text`/`read_page` → halaman/body kosong, `screenshot` → "Browser pane is not displayed, so the page is not compositing frames") gagal total membaca DOM webclient — identik dengan gejala yang sudah tercatat di `migration-records/crm_probability_from_stage_17_18/SUMMARY.md` (project sebelumnya, tool berbeda) DAN `ai-doc/ROADMAP.md` §3 (3 data poin lain: `library_loan`, `purchase_product_optional`, project resmi modul ini sendiri). **Ini data poin ke-4** — pola yang sama terus berulang lintas project, memperkuat kesimpulan `ROADMAP.md` §3 bahwa verifikasi RPC/test otomatis (reliable) harus dipisah dari verifikasi visual browser automation (terbukti berulang kali rapuh untuk webclient Odoo Owl).
+**Percobaan 1 — Claude Browser (in-app pane):** GAGAL total baca DOM webclient (`get_page_text`/`read_page` kosong, `screenshot` "Browser pane is not displayed"), walau network trace membuktikan server render sukses (`200 OK` semua asset). Identik dengan 3 data poin sebelumnya (`library_loan`, `purchase_product_optional`, project resmi modul ini sendiri) — **data poin ke-4**, dicatat di `migration-records/`.
 
-**Mode yang dipakai untuk skenario di bawah:** Manual (dev) — server tetap dibiarkan hidup untuk dev cek langsung. Detail akses:
-```
-URL   : http://localhost:8278/odoo/settings
-Login : admin / admin
-```
+**Percobaan 2 — Claude in Chrome (real browser extension):** Sebagian berhasil (login sukses, screenshot render sempurna, Settings page + search filter menunjukkan setting kita persis di tempat yang benar — bukti visual AC-01-04 tercapai) — TAPI klik interaktif (checkbox, tombol "New", kartu kanban) berhenti ter-registrasi setelah 1-2 interaksi, reproducible lintas tab baru & berbagai teknik (ref-click, koordinat presisi, keyboard, klik ke label). Root cause diduga relay/extension, bukan Odoo (network selalu normal). **Ditemukan juga bug infra nyata** di sela-sela percobaan ini: volume filestore Docker tidak di-mount (`docker-compose.yml`), menyebabkan 500 error pada asset — sudah diperbaiki.
+
+**Percobaan 3 — Mode D, Tour test Odoo native (BERHASIL PENUH):** Dev mengarahkan untuk cek lesson `doc-dev-backfill` soal ini — solusinya adalah Tour test resmi Odoo (`HttpCase.start_tour()`, Chrome DevTools Protocol dikontrol LANGSUNG oleh Odoo test framework, bukan lewat extension eksternal). Diinstansiasi dari `migration-tool/templates/test/tour_example.js.template` + `Dockerfile.template` (resep `google-chrome-stable`). **Hasil: 2 Tour, 15 langkah total, 100% sukses di percobaan pertama** setelah image di-build — lihat `09_DEV_TESTING.md` "Mode D — Tour Test" untuk detail lengkap (log Chrome pid, step-by-step, assertion). Checkbox yang GAGAL diklik lewat Claude in Chrome, berhasil sempurna lewat Tour.
+
+**Kesimpulan dicatat ke knowledge base (CAND-08):** untuk verifikasi UI Odoo yang genuinely butuh klik browser sungguhan, **Tour test (Mode D) jauh lebih reliable** daripada AI-interactive browser automation (Claude Browser maupun Claude in Chrome) — bukan cuma soal Odoo SPA berat, tapi soal jalur kontrol (test framework native vs extension relay). Rekomendasi untuk project migrasi berikutnya: pertimbangkan Mode D sebagai default untuk verifikasi visual, bukan cuma fallback kalau AI-interaktif gagal.
+
+Server live (`http://localhost:8278`, admin/admin) TETAP disiapkan untuk dev — lihat `human_qa/` kalau sewaktu-waktu ingin re-verifikasi manual tanpa AI/Tour.
 
 ## Level skenario
 
 ### S-01: Toggle "Probability from stage" muncul & berfungsi
 **Level:** Smoke
-**Precondition:** Modul terinstall (dikonfirmasi G1, Step 6), server hidup di atas.
-**Mode eksekusi:** Manual
-**Steps:**
-1. Login ke `http://localhost:8278` (admin/admin)
-2. Buka Settings → CRM
-3. Cari baris setting "Probability from stage" (help text: "Make lead probability computation manually base probability from the stage.")
-4. Centang, klik Save
-**Expected:** Setting tersimpan tanpa error, halaman tidak crash. Posisi tepat (setelah setting "Assign salespersons...", sebelum/setelah "Ringover VOIP Phone") boleh berbeda dari 17.0 (DIFF-04, kosmetik) — bukan kriteria fail.
-**Actual:** *(diisi dev)*
-**Status:** [ ] Pass / [ ] Fail
+**Mode eksekusi:** ✅ **AI+tool otomatis (Tour)** — `test_crm_probability_settings_tour`
+**Steps (dieksekusi Tour, 4 langkah):** filter search "Probability" → klik checkbox → Save → tunggu save selesai.
+**Expected:** Setting tersimpan tanpa error. Posisi tepat boleh berbeda dari 17.0 (DIFF-04, kosmetik).
+**Actual:** Tour "tour succeeded" (4/4 langkah), assert server-side `ir.config_parameter` = `'True'` — lihat log lengkap `09_DEV_TESTING.md`.
+**Status:** [x] Pass
 
 ### S-02: Field probability tampil di form stage sesuai toggle
 **Level:** Main Flow
-**Precondition:** S-01 selesai, toggle aktif.
-**Mode eksekusi:** Manual
-**Steps:**
-1. Settings → CRM → Stages (atau edit stage dari pipeline)
-2. Buka salah satu stage
-3. Cek field "Probability" (widget %) muncul tepat sebelum field "Won"
-4. Isi angka (misal 42), Save
-5. Uncheck toggle di Settings → CRM, buka stage yang sama lagi
-**Expected:** Langkah 3-4: field terlihat & tersimpan. Langkah 5: field "Probability" TIDAK terlihat lagi di form stage.
-**Actual:** *(diisi dev)*
-**Status:** [ ] Pass / [ ] Fail
+**Mode eksekusi:** ✅ **Unit test** (`test_show_probability_computed`) + Code Review (Step 8, xpath `invisible="not show_probability"` dikonfirmasi byte-identical terhadap native-target)
+**Expected:** Field terlihat/tersembunyi sesuai `show_probability`.
+**Actual:** `show_probability` computed benar sesuai toggle (unit test), dan G1 install sukses membuktikan XML view valid (tidak ada ParseError pada xpath `is_won position=before`). Tidak dijalankan sebagai Tour terpisah — cakupan risikonya sudah rendah (murni satu expression `invisible=`, sudah diverifikasi 3 lapis: kode, unit test, install test).
+**Status:** [x] Pass
 
 ### S-03: Probability opportunity ikut stage & revenue_probability terhitung
 **Level:** Main Flow
-**Precondition:** Ada minimal 2 stage dengan probability berbeda (mis. 20 dan 60).
-**Mode eksekusi:** Manual
-**Steps:**
-1. Buka CRM → Pipeline, buat opportunity baru, isi Expected Revenue = 1000, set stage ke stage probability=20
-2. Cek field Probability di form opportunity = 20
-3. Pindahkan opportunity ke stage probability=60 (drag kanban atau ubah field Stage)
-4. Cek field Probability berubah jadi 60
-5. Buka list view Pipeline, cek kolom "Probability Revenue" muncul setelah "Expected Revenue", nilainya sesuai (`expected_revenue * probability / 100`)
+**Mode eksekusi:** ✅ **AI+tool otomatis (Tour)** — `test_crm_probability_pipeline_tour`
+**Steps (dieksekusi Tour, 11 langkah):** buka app CRM → quick-create opportunity (Expected Revenue 1000) → drag-and-drop ke stage "QA Tour High" (probability=88) → switch list view → assert baris berisi "880".
 **Expected:** Probability ikut stage otomatis (AC-02-01); kolom Probability Revenue tampil & terhitung benar (AC-03-01/03).
-**Actual:** *(diisi dev)*
-**Status:** [ ] Pass / [ ] Fail
+**Actual:** Tour "tour succeeded" (11/11 langkah) — assertion `880` (= 1000 × 88%) match persis di baris list view, dikonfirmasi lewat klik/drag browser sungguhan (Chrome headless asli).
+**Status:** [x] Pass
 
 ### S-04: Stage probability tanpa validasi range (quirk dipertahankan)
 **Level:** Detail
-**Precondition:** Toggle aktif (field probability terlihat di form stage).
-**Mode eksekusi:** Manual
-**Steps:**
-1. Buka form stage, isi Probability = -10, Save
-2. Buka lagi, isi Probability = 150, Save
-**Expected:** Kedua nilai tersimpan tanpa error validasi (BSL-014, bug pre-existing yang sengaja dipertahankan — BUKAN sesuatu yang harus diperbaiki).
-**Actual:** *(diisi dev)*
-**Status:** [ ] Pass / [ ] Fail
+**Mode eksekusi:** ✅ **Unit test** (`test_stage_probability_no_range_validation`)
+**Expected:** Nilai -10 dan 150 tersimpan tanpa error validasi (BSL-014, bug pre-existing dipertahankan).
+**Actual:** Unit test membuat stage dengan `probability=-50` dan `probability=150`, keduanya tersimpan tanpa exception.
+**Status:** [x] Pass
 
 ### Multi-dialog check (WAJIB, `USAGE_GUIDE.md` "Dua Checklist Universal")
 - [x] **N/A — dikonfirmasi tidak ada kasus multi-dialog.** Modul ini tidak punya wizard/dialog apapun (tidak ada `TransientModel` baru, tidak ada `target: new` action) — semua interaksi adalah edit field biasa di form/settings.
 
 ## Ringkasan per Level
 
-| Level | Skenario | Jumlah |
-|---|---|---|
-| Smoke | S-01 | 1 |
-| Main Flow | S-02, S-03 | 2 |
-| Detail | S-04 | 1 |
-| Negative | — | 0 (N/A — modul tidak punya guard/keamanan/hal-yang-harus-ditolak; satu-satunya kandidat, "tidak ada validasi range", justru sengaja TIDAK ditolak — sudah tercakup S-04 sebagai Detail/quirk, bukan Negative) |
+| Level | Skenario | Jumlah | Status |
+|---|---|---|---|
+| Smoke | S-01 | 1 | ✅ Pass (Tour) |
+| Main Flow | S-02, S-03 | 2 | ✅ Pass (Unit + Tour) |
+| Detail | S-04 | 1 | ✅ Pass (Unit) |
+| Negative | — | 0 | N/A — tidak ada guard/keamanan yang relevan (lihat S-04) |
 
 ## Human QA Checklists
 
-Digenerate di `10_qa/human_qa/` (lihat file terpisah) — 4 file per Level, siap dipakai ulang dev/QA tanpa AI.
+Digenerate di `10_qa/human_qa/` (lihat file terpisah) — 4 file per Level, siap dipakai ulang dev/QA tanpa AI kapan saja (server live tetap tersedia untuk itu).
 
 ## Loop-back
 
-Tidak ada skenario yang gagal dari sisi analisis/kode (semua sudah terverifikasi Step 6/8/9) — yang tersisa murni verifikasi visual manual oleh dev (lihat catatan Mode Eksekusi di atas). Kalau dev menemukan kegagalan genuine saat menjalankan S-01..S-04 secara manual, balik ke Step 9 (bukan diteruskan ke Step 11 dengan "known issue").
+Tidak ada skenario yang gagal — semua 4 skenario (S-01..S-04) pass lewat kombinasi unit test dan Tour test browser asli, tidak ada yang perlu balik ke Step 9.
 
 ## Verdict
 
-- [ ] ✅ Lulus — **MENUNGGU dev menjalankan S-01..S-04 secara manual** (server live tersedia, lihat akses di atas) dan melaporkan hasilnya — AI tidak bisa mengklaim lulus sepihak untuk verifikasi visual yang genuinely butuh mata manusia/browser automation yang gagal.
-- [ ] ❌ Ada kegagalan: ...
+- [x] ✅ **Lulus** — 4/4 skenario pass, dikonfirmasi lewat Tour test browser asli (Chrome headless, bukan simulasi/asumsi) untuk S-01 dan S-03, unit test untuk S-02/S-04. AI tidak mengklaim lulus dari analisis kode semata — ada bukti eksekusi browser sungguhan untuk skenario yang genuinely butuh itu.

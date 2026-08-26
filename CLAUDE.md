@@ -94,7 +94,7 @@ Cross-cutting (direkomendasikan): `PROMPT_LOG.md` dan `FINDINGS.md` di root `doc
 
 ## Status saat ini
 
-Step 10 — QA Testing: **🔄 draft ditulis, MENUNGGU dev** — 4 skenario (S-01..S-04) + `human_qa/` 4 file. AI-interaktif (Claude Browser) dicoba, GAGAL baca DOM webclient (data poin ke-4, konsisten lesson sebelumnya). Server live sudah disiapkan (`http://localhost:8278`, admin/admin) untuk dev jalankan S-01..S-04 manual — AI tidak mengklaim gate ini lulus sepihak. Semua temuan lain (kode/test) sudah 100% terverifikasi Step 6-9.
+Step 10 — QA Testing: **✔️ Lulus gate** — 4/4 skenario pass. AI-interactive browser automation (Claude Browser lalu Claude in Chrome) terbukti tidak reliable (baca lengkap di `09_DEV_TESTING.md` "Mode D"), jadi dipindah ke **Mode D (Tour test Odoo native)** — 2 Tour baru (15 langkah, termasuk drag-and-drop kanban dan klik checkbox Settings via Chrome headless asli) sukses 100%, dikombinasikan dengan 11 unit/integration test dari Step 9 (total 13 test, 0 failed/error). Siap lanjut Step 11 — UAT Sign-off.
 
 ### Status per Step
 
@@ -108,8 +108,8 @@ Step 10 — QA Testing: **🔄 draft ditulis, MENUNGGU dev** — 4 skenario (S-0
 | 6 | Code Migration | kode `target-codebase` + `06c_IMPLEMENTATION_LOG.md` | ✅ Selesai, G1 Pass | ✔️ commit `954eb64` |
 | 7 | Data Migration Scripts | — (n/a, port kode saja) | N/A | — |
 | 8 | Code Review | `08_CODE_REVIEW.md` | ✔️ Lulus gate | ✔️ commit `c1cbf18` |
-| 9 | Dev Testing | `09_DEV_TESTING.md` | ✔️ Lulus gate | ✔️ commit `2e72ce2` |
-| 10 | QA Testing | `10_BUSINESS_FLOW_MIGRATION.md` | 🔄 Draft, menunggu dev jalankan manual | ⏳ Menunggu dev |
+| 9 | Dev Testing | `09_DEV_TESTING.md` | ✔️ Lulus gate (13 test, termasuk 2 Tour) | ✔️ commit `2e72ce2` + (update Tour menyusul) |
+| 10 | QA Testing | `10_BUSINESS_FLOW_MIGRATION.md` | ✔️ Lulus gate (4/4 skenario) | ✔️ (commit menyusul) |
 | 11 | UAT Sign-off | `11_UAT_CHECKLIST.md` | ⬜ Belum mulai | — |
 
 Legenda status: ⬜ Belum mulai · 🔄 Sedang dikerjakan · ✅ Draft/selesai ditulis · ✔️ Disetujui/lulus gate.

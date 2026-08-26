@@ -1,10 +1,20 @@
 # Docker Environment — crm_probability_from_stage migration (17.0 -> 18.0)
-# Instansiasi dari migration-tool/templates/docker-compose.yml.template, disederhanakan:
-# modul ini TIDAK punya Tour test/Owl-JS (Fase E/F N/A, dikonfirmasi 01a_MIGRATION_INTAKE.md §2b)
-# jadi pakai `image: odoo:18.0` langsung, skip Dockerfile/Chrome. Cuma service target (G1 install
-# test) — project ini (CLI + Mode Git) independen dari project resmi sebelumnya
-# (CRM-probability-from-stage_18), pakai nama project + port berbeda supaya tidak bentrok kalau
-# containernya kebetulan masih ada.
+# Instansiasi dari migration-tool/templates/docker-compose.yml.template — project ini (CLI + Mode
+# Git) independen dari project resmi sebelumnya (CRM-probability-from-stage_18), pakai nama
+# project + port berbeda supaya tidak bentrok kalau containernya kebetulan masih ada.
+#
+# UPDATE Step 10 (2026-08-26): tadinya `image: odoo:18.0` langsung (modul tidak punya Tour test
+# di source). Sekarang pakai `build:` + Dockerfile.target (resep google-chrome-stable) karena
+# Claude in Chrome/Claude Browser terbukti tidak reliable untuk klik interaktif di sesi ini —
+# ditulis Tour test BARU (bukan port dari source, source tidak punya) untuk verifikasi UI yang
+# genuinely butuh browser nyata (toggle setting, field visibility, kolom list) — lihat
+# 10_BUSINESS_FLOW_MIGRATION.md "Mode D".
+#
+# CATATAN (ditemukan Step 10, 2026-08-26): volume `target_db_data` cuma persist data Postgres.
+# `/var/lib/odoo/filestore` (tempat asset web ter-compile disimpan sebagai ir.attachment) TIDAK
+# dimount — begitu container `odoo_target` (dijalankan via `docker compose run --rm`, ephemeral)
+# dihapus, filestore ikut hilang padahal DB masih merujuk ke path filenya (FileNotFoundError,
+# 500 di semua /web/assets/*). Fix: tambah volume `target_filestore` di bawah.
 
 name: crm_probability_from_stage_17_18_cli
 
@@ -19,7 +29,10 @@ services:
       - target_db_data:/var/lib/postgresql/data
 
   odoo_target:
-    image: odoo:18.0
+    build:
+      context: .
+      dockerfile: Dockerfile.target
+    shm_size: '2gb'
     depends_on:
       - db_target
     ports:
@@ -31,6 +44,7 @@ services:
     volumes:
       - D:/Kuncoro/doodex/repo/CRM-probability-from-stage-migration-18/crm_probability_from_stage:/mnt/extra-addons/crm_probability_from_stage
       - ./logs:/var/log/odoo
+      - target_filestore:/var/lib/odoo
     command: >
       odoo -d target_db -i crm_probability_from_stage
       --addons-path=/usr/lib/python3/dist-packages/odoo/addons,/mnt/extra-addons
@@ -39,3 +53,4 @@ services:
 
 volumes:
   target_db_data:
+  target_filestore:

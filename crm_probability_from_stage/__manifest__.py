@@ -22,6 +22,11 @@
         'views/crm_views.xml',
         'views/res_config_settings.xml',
     ],
+    'assets': {
+        'web.assets_tests': [
+            'crm_probability_from_stage/static/tests/tours/**/*',
+        ],
+    },
     'application': False,
     'installable': True,
 }
