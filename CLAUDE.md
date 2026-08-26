@@ -98,15 +98,15 @@ Cross-cutting (direkomendasikan): `PROMPT_LOG.md` dan `FINDINGS.md` di root `doc
 
 ## Status saat ini
 
-Step 1 — Intake & Scope: 🔄 **Bootstrap Mode Git selesai, belum mulai penulisan `01a_MIGRATION_INTAKE.md`/`01b_BASELINE_SPEC.md`.**
+Step 1 — Intake & Scope: ✔️ **Selesai.** `01a_MIGRATION_INTAKE.md` + `01b_BASELINE_SPEC.md` ditulis (carry-over tervalidasi dari baseline migrasi 17→18, 16 klaim BSL semua `[MATCH]`, cross-check kode 1:1 tanpa drift). Gate §0b (path absolut) sudah dipenuhi di commit bootstrap.
 
 Yang sudah selesai di sesi ini (2026-08-26):
 - Branch `migration/19.0_target` dibuat di `target-codebase` (repo ini) dari `origin/migration/18.0`.
 - `source-codebase` di-clone ke folder sibling `crm-probability-from-stage-migration-19-source`, branch `migration/18.0` (read-only referensi).
 - `doc-dev/migration_17.0_18.0/` (project migrasi sebelumnya) diarsipkan ke `doc-dev/_archive/migration_17.0_18.0/`.
-- `doc-dev/migration_18.0_19.0/doc/` dibuat (masih kosong, siap diisi step 1).
 - `.claude/settings.json` + `.gitignore` diganti total ke template `migration-tool` terbaru (varian Mode Git), placeholder `{{ABS_PATH_...}}` sudah diisi path nyata (lihat tabel folder di bawah).
 - `CLAUDE.md` ini diinstansiasi dari `CLAUDE_TEMPLATE.md`.
+- `01a_MIGRATION_INTAKE.md`/`01b_BASELINE_SPEC.md` ditulis, gate Step 1 ditutup.
 
 > AI: update bagian ini sendiri di akhir tiap sesi kerja, supaya sesi berikutnya tahu persis harus lanjut dari mana tanpa tanya ulang ke user.
 
@@ -114,7 +114,7 @@ Yang sudah selesai di sesi ini (2026-08-26):
 
 | # | Step | Dokumen | Status | Gate |
 |---|---|---|---|---|
-| 1 | Intake & Scope | `01a_MIGRATION_INTAKE.md`, `01b_BASELINE_SPEC.md` | 🔄 Bootstrap selesai, dokumen belum ditulis | ⏳ Menunggu |
+| 1 | Intake & Scope | `01a_MIGRATION_INTAKE.md`, `01b_BASELINE_SPEC.md` | ✔️ Selesai | ✔️ Lulus gate (commit menyusul) |
 | 2 | Diff & Compatibility Analysis | `02_DIFF_ANALYSIS.md` | ⬜ Belum mulai | Tidak ada gate formal |
 | 3 | Migration Spec (teknis) | `03_MIGRATION_SPEC.md` | ⬜ Belum mulai | — |
 | 4 | Spec Completeness Review | `04_SPEC_COMPLETENESS_REVIEW.md` | ⬜ Belum mulai | — |
