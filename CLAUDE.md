@@ -98,7 +98,9 @@ Cross-cutting (direkomendasikan): `PROMPT_LOG.md` dan `FINDINGS.md` di root `doc
 
 ## Status saat ini
 
-Step 1-10 ✔️ **SELESAI, semua gate lulus.** Step 11 (UAT): test script (`11_UAT_CHECKLIST.md`, T-01 s.d. T-04) sudah ditulis siap-jalan, **menunggu eksekusi tangan sendiri + sign-off oleh business user (PM/FA/Sales)** — AI tidak pernah mengisi kolom Actual/Status/Sign-off. Server 19.0 (Docker, `docker-env/`) masih hidup di `localhost:8178` (login `admin`/`admin`) untuk dipakai langsung menjalankan T-01..T-04 dan S-02 (`10_qa/human_qa/02_MAIN_FLOW.md` Bagian 1) — tidak perlu setup ulang.
+Step 1-11 — UAT Sign-off: **✔️ Ditutup lewat WAIVER eksplisit dev** (kuncoro@doodex.net, 2026-08-26), BUKAN sign-off UAT asli oleh business user (PM/FA/Sales Manager). Dev secara sadar memilih melewati eksekusi manual T-01 s.d. T-04 dan menerima bukti test otomatis (Step 9/10, Chrome headless asli) sebagai dasar. Dicatat eksplisit di `11_UAT_CHECKLIST.md` supaya tidak menyesatkan pembaca dokumen ini nanti — kalau modul ini akan dipakai instance produksi sungguhan, sign-off asli tetap direkomendasikan sebelum go-live.
+
+**Project migrasi 11-step ini sekarang tuntas** (semua step 1-11 selesai, gate 1/4/8/9/10 lulus asli, gate 11 ditutup via waiver terdokumentasi). Server 19.0 (Docker, `docker-env/`) masih hidup di `localhost:8178` (login `admin`/`admin`) kalau dev sewaktu-waktu mau jalankan T-01..T-04/S-02 secara nyata (menggantikan waiver dengan sign-off asli).
 
 **Ringkasan temuan teknis project ini:** 2 breaking change asli Odoo 19.0 ditemukan & di-fix — DIFF-01 (`crm.lead._pls_get_naive_bayes_probabilities()` return signature jadi tuple) dan DIFF-08 (`web_tour` `stepUtils` import path pindah, ditemukan lewat eksekusi test nyata bukan analisis statis). Keduanya sudah di-fix, diverifikasi PASS lewat 13/13 test otomatis (unit/integration/tour, headless Chrome nyata di Docker). 0 issue di code review. Kedua temuan dicatat sebagai kandidat knowledge base (`migration-tool/migration-records/crm_probability_from_stage_18_19/SUMMARY.md`, CAND-01/02/03) untuk project migrasi 18→19 lain.
 
@@ -119,7 +121,9 @@ Yang sudah selesai di sesi ini (2026-08-26):
 - Step 8 gate LULUS — 0 issue, 16/16 AC covered, cek tabrakan nama method/field dua arah terhadap native 19.0: bersih.
 - Step 9 gate LULUS — formalisasi dokumen dari eksekusi nyata Step 6, 14/14 AC tercakup, 13/13 test PASS, audit kesiapan test (9a) semua Lengkap.
 - Step 10 gate LULUS — 4/5 skenario Pass (evidence Tour test Step 9), S-02 (visibility field stage form, DIFF-04) didelegasikan ke dev sebagai verifikasi visual manual (`human_qa/02_MAIN_FLOW.md` Bagian 1) — AI-interaktif terhalang keterbatasan tool Browser pane sesi ini (bukan indikasi masalah aplikasi, network layer terbukti sehat).
-- Step 11: `11_UAT_CHECKLIST.md` ditulis (T-01 s.d. T-04, bahasa awam, data dummy konkret) — **BELUM di-sign-off**, menunggu eksekusi tangan sendiri oleh business user. Ini titik berhenti sah terakhir project ini (bukan blocker AI).
+- Step 11: `11_UAT_CHECKLIST.md` ditulis (T-01 s.d. T-04, bahasa awam, data dummy konkret) — **✔️ Ditutup lewat WAIVER eksplisit dev** (kuncoro@doodex.net, 2026-08-26), BUKAN sign-off UAT asli oleh business user (PM/FA/Sales Manager). Dev secara sadar memilih melewati eksekusi manual T-01 s.d. T-04 dan menerima bukti test otomatis (Step 9 unit/integration/tour + Step 10 Tour, Chrome headless asli) sebagai dasar. Dicatat eksplisit di `11_UAT_CHECKLIST.md` supaya tidak menyesatkan pembaca dokumen ini nanti — kalau modul ini akan dipakai instance produksi sungguhan, sign-off asli tetap direkomendasikan sebelum go-live.
+
+**Project migrasi 11-step ini sekarang tuntas** (semua step 1-11 selesai, gate 1/4/8/9/10 lulus asli, gate 11 ditutup via waiver terdokumentasi) — pola penutupan identik dengan migrasi 17→18 modul yang sama.
 
 > AI: update bagian ini sendiri di akhir tiap sesi kerja, supaya sesi berikutnya tahu persis harus lanjut dari mana tanpa tanya ulang ke user.
 
@@ -137,7 +141,7 @@ Yang sudah selesai di sesi ini (2026-08-26):
 | 8 | Code Review | `08_CODE_REVIEW.md` | ✔️ Selesai | ✔️ Lulus gate (commit `e677858`) |
 | 9 | Dev Testing | `09_DEV_TESTING.md` | ✔️ Selesai | ✔️ Lulus gate (commit `22b2b03`) |
 | 10 | QA Testing | `10_BUSINESS_FLOW_MIGRATION.md` | ✔️ Selesai | ✔️ Lulus gate (commit menyusul) |
-| 11 | UAT Sign-off | `11_UAT_CHECKLIST.md` | ✅ Test script siap-jalan (T-01..T-04) | ⏳ Menunggu eksekusi + sign-off business user |
+| 11 | UAT Sign-off | `11_UAT_CHECKLIST.md` | ✔️ Ditutup via **waiver dev** (bukan UAT asli) | ✔️ (commit menyusul) |
 
 Legenda status: ⬜ Belum mulai · 🔄 Sedang dikerjakan · ✅ Draft/selesai ditulis · ✔️ Disetujui/lulus gate.
 
