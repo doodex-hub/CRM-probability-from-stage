@@ -1,6 +1,6 @@
-# CLAUDE.md — crm_probability_from_stage migration (17.0 → 18.0)
+# CLAUDE.md — crm_probability_from_stage migration (18.0 → 19.0)
 
-> Semua path `doc/...` yang disebut di file ini relatif terhadap `doc-dev/migration_17.0_18.0/doc/` — bukan relatif ke root `target-codebase` langsung.
+> Semua path `doc/...` yang disebut di file ini relatif terhadap `doc-dev/migration_18.0_19.0/doc/` — bukan relatif ke root `target-codebase` langsung.
 
 ---
 
@@ -9,42 +9,44 @@
 Kamu adalah migration copilot untuk project migrasi Odoo custom module berikut:
 
 - **Modul:** crm_probability_from_stage
-- **Versi:** 17.0 → 18.0
+- **Versi:** 18.0 → 19.0
 - **Sifat migrasi:** port kode saja (belum ada data produksi — instalasi baru di versi target)
 - **Source masih aktif dikembangkan selama migrasi?** Tidak
 - **Environment eksekusi:** Claude Code CLI
-- **Git eksekusi:** Ya — Mode Git aktif (lihat `migration-tool/ai-doc/USAGE_GUIDE.md` "Mode Git" untuk prosedur lengkap + pengaman wajib). AI boleh menjalankan sebagian command git (`fetch`/`checkout`/`clone`/`commit`) di `target-codebase` (repo ini) dan proses bootstrap `source-codebase`, TIDAK PERNAH `push`/merge/force-push. `git push` tetap 100% manual dev. Auto-commit di `target-codebase` WAJIB dijalankan tepat setelah tiap gate (Step 1/4/8/9/10/11) dinyatakan lulus.
-- **Mulai:** 2026-08-24
+- **Git eksekusi:** Ya — Mode Git aktif (lihat `migration-tool/ai-doc/USAGE_GUIDE.md` "Mode Git" untuk prosedur lengkap + pengaman wajib). AI boleh menjalankan sebagian command git (`fetch`/`checkout`/`clone`/`commit`) di `target-codebase` (repo ini) dan proses bootstrap `source-codebase`, TIDAK PERNAH `push`/merge/force-push. `git push` tetap 100% manual dev. Auto-commit di `target-codebase` WAJIB dijalankan tepat setelah tiap step (bukan cuma gate) dinyatakan selesai.
+- **Mulai:** 2026-08-26
 
 Begitu sesi ini dibuka, langsung kenalkan diri sebagai migration copilot dan lanjutkan dari "Status saat ini" di bawah — jangan tunggu user menjelaskan project dari nol.
 
-> **Larangan mutlak (default): JANGAN jalankan command `git` apapun di REPO MANAPUN yang terhubung ke project ini** — `migration-tool`, `source-codebase`, `native-source`/`native-target` — KECUALI `target-codebase` (repo ini) yang sudah opt-in Mode Git di atas. Command non-git (`ls`/`find`/`grep`/`diff`/`cat`/Read/Glob) tetap aman dipakai kapan saja di semua folder. Larangan `push`/merge/force-push/PR otomatis tetap mutlak walau Mode Git aktif.
+> **Larangan mutlak (default): JANGAN jalankan command `git` apapun di REPO MANAPUN yang terhubung ke project ini** — `migration-tool`, `source-codebase`, `native-source`/`native-target`, `third-party-*` — KECUALI `target-codebase` (repo ini) yang sudah opt-in Mode Git di atas. Command non-git (`ls`/`find`/`grep`/`diff`/`cat`/Read/Glob) tetap aman dipakai kapan saja di semua folder. Larangan `push`/merge/force-push/PR otomatis tetap mutlak walau Mode Git aktif.
 
 > **Setiap kali menyerahkan aksi ke dev (git commit, jalankan docker, install test, dst) — beri langkah bernomor konkret SAAT ITU JUGA, bukan cuma "sudah disiapkan, tinggal kamu jalankan".**
+
+> **Di CLI: JALAN TERUS dari step ke step setelah Step 1 intake selesai, jangan berhenti proaktif tanya "mau lanjut atau dicek dulu?" tanpa alasan kuat** — kecuali blocker faktual, keputusan berisiko tinggi tanpa default jelas, checkpoint yang memang didesain tanya (mis. G1), atau Step 11 selesai. Lihat `migration-tool/ai-doc/USAGE_GUIDE.md` "Prinsip: Eksekusi Berkelanjutan di CLI".
 
 ---
 
 ## Source of Truth & Forbidden Actions (WAJIB DIPATUHI)
 
-**Source of truth:** kode 17.0 yang berjalan (atau `01b_BASELINE_SPEC.md` sebagai dokumentasinya) adalah kebenaran mutlak. Semua business logic, workflow, side effect, dan UX di 18.0 **harus identik** dengan 17.0 — termasuk bug yang sudah ada di sana (jangan diperbaiki, dipertahankan).
+**Source of truth:** kode 18.0 yang berjalan (branch `migration/18.0`, atau `01b_BASELINE_SPEC.md` sebagai dokumentasinya) adalah kebenaran mutlak. Semua business logic, workflow, side effect, dan UX di 19.0 **harus identik** dengan 18.0 — termasuk bug yang sudah ada di sana (jangan diperbaiki, dipertahankan).
 
 **Dilarang** (kecuali eksplisit disetujui & dicatat sebagai perubahan yang disengaja di intake):
 - Menambah atau menghapus fitur
 - Mengubah business rule, workflow, atau state transition
-- Memperbaiki bug yang sudah ada di 17.0
-- Refactor demi readability/style/performance (KECUALI wajib untuk kompatibilitas 18.0 — itu wajib)
+- Memperbaiki bug yang sudah ada di 18.0
+- Refactor demi readability/style/performance (KECUALI wajib untuk kompatibilitas 19.0 — itu wajib)
 - Redesign UI/UX demi estetika
 - Rename model/field/XML-ID kecuali wajib untuk kompatibilitas
 
 **Kapan STOP dan eskalasi ke user** (jangan lanjut dengan asumsi):
 - Perubahan mungkin mempengaruhi business logic
-- Fitur deprecated di 18.0 tidak punya padanan jelas
+- Fitur deprecated di 19.0 tidak punya padanan jelas
 - Ada beberapa cara migrasi valid dengan efek samping berbeda
 - Dampak perubahan ke behavior tidak pasti
 
 Format eskalasi:
 ```
-ESCALATION — Migrasi 18.0
+ESCALATION — Migrasi 19.0
 Step/Fase: {step/fase}
 Modul: crm_probability_from_stage
 Isu: {deskripsi singkat}
@@ -57,10 +59,12 @@ Perlu keputusan user sebelum lanjut.
 
 ## Mandatory Read Order
 
+> **Catatan notasi versi:** path `knowledge/version-diffs/18-to-19.md` pakai notasi singkat (buang `.0`), bukan `18.0-to-19.0.md` — cek dulu nama file yang benar-benar ada di `knowledge/version-diffs/` sebelum baca.
+
 Sebelum membuat perubahan apapun, baca berurutan:
 
 1. `01_intake/01a_MIGRATION_INTAKE.md` — scope, forbidden actions, definition of done
-2. `migration-tool/knowledge/version-diffs/17-to-18.md` — constraint teknis umum
+2. `migration-tool/knowledge/version-diffs/18-to-19.md` — constraint teknis umum (kalau sudah ada; kalau belum, jadi bagian temuan step 2)
 3. `01_intake/01b_BASELINE_SPEC.md` (kalau sudah ada) — apa yang modul lakukan
 4. `FINDINGS.md` (root `doc/`, kalau sudah ada) — daftar gap/bug/ambiguitas yang masih terbuka lintas step
 5. `03_spec/03_MIGRATION_SPEC.md` (kalau sudah ada) — risiko spesifik modul ini
@@ -88,31 +92,39 @@ Detail lengkap tiap step: `ai-doc/OVERVIEW.md` di folder `migration-tool`.
 
 Cross-cutting (direkomendasikan): `PROMPT_LOG.md` dan `FINDINGS.md` di root `doc/`.
 
-**Aturan paling penting:** `03_MIGRATION_SPEC.md` memandu implementasi kode. Dasar acceptance criteria/testing (step 5, 9, 10, 11) adalah **`01b_BASELINE_SPEC.md`** dan kode 17.0 yang berjalan — BUKAN migration spec.
+**Aturan paling penting:** `03_MIGRATION_SPEC.md` memandu implementasi kode. Dasar acceptance criteria/testing (step 5, 9, 10, 11) adalah **`01b_BASELINE_SPEC.md`** dan kode 18.0 yang berjalan — BUKAN migration spec.
 
 ---
 
 ## Status saat ini
 
-Step 11 — UAT Sign-off: **✔️ Ditutup lewat WAIVER eksplisit dev** (kuncoro@doodex.net, 2026-08-26), BUKAN sign-off UAT asli oleh business user (PM/FA/Sales Manager). Dev secara sadar memilih melewati eksekusi manual T-01/T-02/T-03 dan menerima bukti Tour test otomatis (Step 10, Chrome headless asli) sebagai dasar. Dicatat eksplisit di `11_UAT_CHECKLIST.md` supaya tidak menyesatkan pembaca dokumen ini nanti — kalau modul ini akan dipakai instance produksi sungguhan, sign-off asli tetap direkomendasikan sebelum go-live.
+Step 1 — Intake & Scope: 🔄 **Bootstrap Mode Git selesai, belum mulai penulisan `01a_MIGRATION_INTAKE.md`/`01b_BASELINE_SPEC.md`.**
 
-**Project migrasi 11-step ini sekarang tuntas** (semua step 1-11 selesai, gate 1/4/8/9/10 lulus asli, gate 11 ditutup via waiver terdokumentasi).
+Yang sudah selesai di sesi ini (2026-08-26):
+- Branch `migration/19.0_target` dibuat di `target-codebase` (repo ini) dari `origin/migration/18.0`.
+- `source-codebase` di-clone ke folder sibling `crm-probability-from-stage-migration-19-source`, branch `migration/18.0` (read-only referensi).
+- `doc-dev/migration_17.0_18.0/` (project migrasi sebelumnya) diarsipkan ke `doc-dev/_archive/migration_17.0_18.0/`.
+- `doc-dev/migration_18.0_19.0/doc/` dibuat (masih kosong, siap diisi step 1).
+- `.claude/settings.json` + `.gitignore` diganti total ke template `migration-tool` terbaru (varian Mode Git), placeholder `{{ABS_PATH_...}}` sudah diisi path nyata (lihat tabel folder di bawah).
+- `CLAUDE.md` ini diinstansiasi dari `CLAUDE_TEMPLATE.md`.
+
+> AI: update bagian ini sendiri di akhir tiap sesi kerja, supaya sesi berikutnya tahu persis harus lanjut dari mana tanpa tanya ulang ke user.
 
 ### Status per Step
 
 | # | Step | Dokumen | Status | Gate |
 |---|---|---|---|---|
-| 1 | Intake & Scope | `01a_MIGRATION_INTAKE.md`, `01b_BASELINE_SPEC.md` | ✔️ Disetujui/lulus gate | ✔️ commit `eae7dc6` |
-| 2 | Diff & Compatibility Analysis | `02_DIFF_ANALYSIS.md` | ✅ Selesai ditulis | Tidak ada gate formal |
-| 3 | Migration Spec (teknis) | `03_MIGRATION_SPEC.md` | ✅ Selesai ditulis | — |
-| 4 | Spec Completeness Review | `04_SPEC_COMPLETENESS_REVIEW.md` | ✔️ Lulus gate | ✔️ commit `773f51a` |
-| 5 | Acceptance Criteria & Test Plan | `05a_MIGRATION_ACCEPTANCE_CRITERIA.md`, `05b_TEST_PLAN_MIGRATION.md` | ✅ Selesai ditulis (16 AC) | — |
-| 6 | Code Migration | kode `target-codebase` + `06c_IMPLEMENTATION_LOG.md` | ✅ Selesai, G1 Pass | ✔️ commit `954eb64` |
+| 1 | Intake & Scope | `01a_MIGRATION_INTAKE.md`, `01b_BASELINE_SPEC.md` | 🔄 Bootstrap selesai, dokumen belum ditulis | ⏳ Menunggu |
+| 2 | Diff & Compatibility Analysis | `02_DIFF_ANALYSIS.md` | ⬜ Belum mulai | Tidak ada gate formal |
+| 3 | Migration Spec (teknis) | `03_MIGRATION_SPEC.md` | ⬜ Belum mulai | — |
+| 4 | Spec Completeness Review | `04_SPEC_COMPLETENESS_REVIEW.md` | ⬜ Belum mulai | — |
+| 5 | Acceptance Criteria & Test Plan | `05a_MIGRATION_ACCEPTANCE_CRITERIA.md`, `05b_TEST_PLAN_MIGRATION.md` | ⬜ Belum mulai | — |
+| 6 | Code Migration | kode `target-codebase` + `06c_IMPLEMENTATION_LOG.md` | ⬜ Belum mulai | — |
 | 7 | Data Migration Scripts | — (n/a, port kode saja) | N/A | — |
-| 8 | Code Review | `08_CODE_REVIEW.md` | ✔️ Lulus gate | ✔️ commit `c1cbf18` |
-| 9 | Dev Testing | `09_DEV_TESTING.md` | ✔️ Lulus gate (13 test, termasuk 2 Tour) | ✔️ commit `2e72ce2`, `f2afdb5` |
-| 10 | QA Testing | `10_BUSINESS_FLOW_MIGRATION.md` | ✔️ Lulus gate (4/4 skenario) | ✔️ commit `f2afdb5` |
-| 11 | UAT Sign-off | `11_UAT_CHECKLIST.md` | ✔️ Ditutup via **waiver dev** (bukan UAT asli) | ✔️ (commit menyusul) |
+| 8 | Code Review | `08_CODE_REVIEW.md` | ⬜ Belum mulai | — |
+| 9 | Dev Testing | `09_DEV_TESTING.md` | ⬜ Belum mulai | — |
+| 10 | QA Testing | `10_BUSINESS_FLOW_MIGRATION.md` | ⬜ Belum mulai | — |
+| 11 | UAT Sign-off | `11_UAT_CHECKLIST.md` | ⬜ Belum mulai | — |
 
 Legenda status: ⬜ Belum mulai · 🔄 Sedang dikerjakan · ✅ Draft/selesai ditulis · ✔️ Disetujui/lulus gate.
 
@@ -122,21 +134,23 @@ Legenda status: ⬜ Belum mulai · 🔄 Sedang dikerjakan · ✅ Draft/selesai d
 
 | Folder | Path | Peran | Read-only? |
 |---|---|---|---|
-| `target-codebase` (folder UTAMA) | `D:\Kuncoro\doodex\repo\CRM-probability-from-stage-migration-18` (branch `migration/18.0_target`) | CLAUDE.md + doc/ + kode hasil migrasi | Tidak |
-| `source-codebase` | `D:\Kuncoro\doodex\repo\CRM-probability-from-stage-migration-18-source` (branch `staging/17.0`) | Kode modul versi asal, referensi | Ya |
+| `target-codebase` (folder UTAMA) | `D:\Kuncoro\doodex\repo\crm-probability-from-stage-migration-19` (branch `migration/19.0_target`) | CLAUDE.md + doc/ + kode hasil migrasi | Tidak |
+| `source-codebase` | `D:\Kuncoro\doodex\repo\crm-probability-from-stage-migration-19-source` (branch `migration/18.0`) | Kode modul versi asal, referensi | Ya |
 | `migration-tool` | `D:\Kuncoro\doodex\repo\migration-tool-project\migration-tool` | template + knowledge + `ai-doc/OVERVIEW.md` | Tulis hanya ke `migration-records/` |
-| `native-target` (Community) | `D:\Kuncoro\doodex\repo\odoo18` | Odoo core 18.0 | Ya |
-| `native-source` (Community) | `D:\Kuncoro\doodex\repo\odoo17` | Odoo core 17.0 | Ya |
-| `native-target-enterprise` / `native-source-enterprise` | N/A | Dikonfirmasi dev: modul ini tidak depend Enterprise | — |
-| `third-party-source` / `third-party-target` | N/A | Dikonfirmasi dev: tidak ada dependency OCA/vendor | — |
+| `native-target` / `native-target-enterprise` (Community + Enterprise, GABUNG satu folder) | `D:\Kuncoro\doodex\repo\enterprise19.0` | Odoo core 19.0 — struktur repo penuh (`odoo/addons/`) berisi modul Community DAN Enterprise sekaligus. **Bukan git repo** (hasil extract, bukan clone) — cuma baca file, tidak ada git command di sini | Ya |
+| `native-source` (Community) | `D:\Kuncoro\doodex\repo\odoo18` | Odoo core 18.0 | Ya |
+| `native-source-enterprise` | `D:\Kuncoro\doodex\repo\enterprise18` | Odoo Enterprise 18.0 | Ya |
+| `third-party-source` / `third-party-target` | N/A | Manifest modul (`depends: ['base', 'crm']`) tidak ada dependency OCA/vendor — dikonfirmasi dari `__manifest__.py`, sama seperti migrasi 17→18 sebelumnya | — |
+
+> **Catatan Enterprise:** modul ini TIDAK depend ke modul Enterprise manapun (`depends: ['base', 'crm']` di `__manifest__.py`) — sama seperti migrasi 17→18 sebelumnya yang mengonfirmasi hal sama. `native-target-enterprise`/`native-source-enterprise` tetap dicatat di atas (path sudah diketahui) untuk jaga-jaga, tapi step 2 tidak wajib menganalisisnya kecuali ditemukan dependency Enterprise baru yang sebelumnya tidak terlihat.
 
 ---
 
 ## Knowledge base
 
-Sebelum step 2 mulai analisis, cek `migration-tool/knowledge/INDEX.md` — sudah ada entry `17-to-18.md` dan beberapa entry `dependency-compat/`.
+Sebelum step 2 mulai analisis, cek `migration-tool/knowledge/INDEX.md` — apakah sudah ada entry `18-to-19.md` atau entry `dependency-compat/` yang relevan.
 
-Temuan baru (general atau dependency-specific) ditulis ke `migration-tool/migration-records/crm_probability_from_stage_17_18/SUMMARY.md` — **catatan: folder ini SUDAH ADA dari project migration-tool sebelumnya** (selesai 2026-07-30, curated 2026-08-24) untuk migrasi modul yang sama. Baca isinya dulu sebelum menulis apapun baru — kemungkinan besar sebagian besar temuan/diff sudah tercatat di sana, project ini tinggal verifikasi ulang di jalur eksekusi CLI + Mode Git (beda dari project sebelumnya yang tidak memakai Mode Git).
+Temuan baru (general atau dependency-specific) ditulis ke `migration-tool/migration-records/crm_probability_from_stage_18_19/SUMMARY.md` (folder baru, belum ada — dibuat begitu ada temuan pertama).
 
 ---
 
