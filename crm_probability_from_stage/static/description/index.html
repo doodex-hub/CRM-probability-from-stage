@@ -103,8 +103,11 @@
        column under 720px. On a phone with this block killed the tables stay
        side by side and get narrow, which is legible but tight.
    ========================================================================== */
-.cps, .cps *, .cps *::before, .cps *::after { box-sizing: border-box; }
-.cps img { max-width: 100%; }
+/* NO box-sizing rule here on purpose. The page is authored so that no
+   element sets both a width and a padding, which makes it box-model
+   independent - but declaring border-box HERE would still change the
+   geometry of anything the store's own reset does not, and then this block
+   would be load-bearing after all. It cost 16px on the pixel test. */
 
 /* hover / open states */
 .cps .tabgroup a:hover { background-color: #ffffff; color: #270140; }
@@ -140,7 +143,7 @@
          <!-- ====================================================== nav (not sticky) -->
          <div class="cpnav" style="border-bottom: 1px solid #ece4f3; background-color: #fff; padding: 0 24px">
             <div class="cpnav-in" style="max-width: 1032px; margin: 0 auto; padding: 12px 0; display: block">
-               <table class="lay" style="width: 100%; border-collapse: collapse; border-spacing: 0px 0px"><tbody><tr><td style="vertical-align: middle"><a class="cpnav-brand" href="#cps-overview" style="color: #270140; display: inline-block; font-weight: 800; font-size: 15px; text-decoration: none; letter-spacing: -0.01em"><img class="cpnav-logo" height="26" src="./assets/icons/brand-logo.png" alt="" width="26" style="max-width: 100%; width: 26px; height: 26px; display: inline-block; margin-right: 9px; vertical-align: middle">CRM Probability <span style="color: #737373; font-weight: 600; margin-left: 5px">From Stage</span></a>
+               <table class="lay" style="width: 100%; border-collapse: collapse; border-spacing: 0px 0px"><tbody><tr><td style="vertical-align: middle"><a class="cpnav-brand" href="#cps-overview" style="color: #270140; display: inline-block; font-weight: 800; font-size: 15px; text-decoration: none; letter-spacing: -0.01em"><img class="cpnav-logo" height="26" src="./assets/icons/brand-logo.png" alt="" width="26" style="max-width: none; width: 26px; height: 26px; display: inline-block; margin-right: 9px; vertical-align: middle; min-width: 26px">CRM Probability <span style="color: #737373; font-weight: 600; margin-left: 5px">From Stage</span></a>
                </td><td style="vertical-align: middle; text-align: center"><nav class="tabgroup" style="display: inline-block; background-color: #faf7fc; border: 1px solid #ece4f3; border-radius: 9999px; padding: 4px">
                   <a href="#cps-showcase" style="color: #171717; text-decoration: none; font-size: 13.5px; font-weight: 600; padding: 7px 14px; border-radius: 9999px; white-space: nowrap; display: inline-block; margin: 1px">See it</a><a href="#cps-features" style="color: #171717; text-decoration: none; font-size: 13.5px; font-weight: 600; padding: 7px 14px; border-radius: 9999px; white-space: nowrap; display: inline-block; margin: 1px">Features</a><a href="#cps-usecases" style="color: #171717; text-decoration: none; font-size: 13.5px; font-weight: 600; padding: 7px 14px; border-radius: 9999px; white-space: nowrap; display: inline-block; margin: 1px">Use cases</a><a href="#cps-how" style="color: #171717; text-decoration: none; font-size: 13.5px; font-weight: 600; padding: 7px 14px; border-radius: 9999px; white-space: nowrap; display: inline-block; margin: 1px">How it works</a><a href="#cps-faqs" style="color: #171717; text-decoration: none; font-size: 13.5px; font-weight: 600; padding: 7px 14px; border-radius: 9999px; white-space: nowrap; display: inline-block; margin: 1px">FAQ</a><a href="#cps-releases" style="color: #171717; text-decoration: none; font-size: 13.5px; font-weight: 600; padding: 7px 14px; border-radius: 9999px; white-space: nowrap; display: inline-block; margin: 1px">Releases</a>
                </nav>
@@ -231,41 +234,41 @@
                      What the module adds to your Odoo
                   </h3>
                   <div class="featgrid" style="display: block"><div style="margin: 0 -22px"><table class="lay" style="width: 100%; table-layout: fixed; border-collapse: separate; border-spacing: 22px 0px; height: 1px"><tbody><tr><td class="feat" style="padding: 15px 0 15px 26px; border-top: 1px solid #ece4f3; vertical-align: top; height: 100%">
-                        <h4 style="letter-spacing: -0.015em; font-weight: 700; color: #171717; margin: 0 0 3px; font-size: 14.5px"><img class="mk-dia" alt="" src="./assets/icons/ic-diamond.png" style="max-width: 100%; display: inline-block; width: 9px; height: 9px; margin: 0 15px 0 -24px">A Probability field on every CRM stage</h4>
+                        <h4 style="letter-spacing: -0.015em; font-weight: 700; color: #171717; margin: 0 0 3px; font-size: 14.5px"><img class="mk-dia" alt="" src="./assets/icons/ic-diamond.png" style="max-width: none; display: inline-block; width: 9px; height: 9px; margin: 0 15px 0 -24px; min-width: 9px">A Probability field on every CRM stage</h4>
                         <p style="margin: 0; font-size: 12.5px; color: #737373; line-height: 1.55">
                            New percentage field on the stage form, default 0%.
                         </p>
                      </td>
                      <td class="feat" style="padding: 15px 0 15px 26px; border-top: 1px solid #ece4f3; vertical-align: top; height: 100%">
-                        <h4 style="letter-spacing: -0.015em; font-weight: 700; color: #171717; margin: 0 0 3px; font-size: 14.5px"><img class="mk-dia" alt="" src="./assets/icons/ic-diamond.png" style="max-width: 100%; display: inline-block; width: 9px; height: 9px; margin: 0 15px 0 -24px">One setting, in CRM Configuration</h4>
+                        <h4 style="letter-spacing: -0.015em; font-weight: 700; color: #171717; margin: 0 0 3px; font-size: 14.5px"><img class="mk-dia" alt="" src="./assets/icons/ic-diamond.png" style="max-width: none; display: inline-block; width: 9px; height: 9px; margin: 0 15px 0 -24px; min-width: 9px">One setting, in CRM Configuration</h4>
                         <p style="margin: 0; font-size: 12.5px; color: #737373; line-height: 1.55">
                            &ldquo;Probability from stage&rdquo; &mdash; a single
                            checkbox, off until you tick it.
                         </p>
                      </td>
                      </tr><tr><td class="feat" style="padding: 15px 0 15px 26px; border-top: 1px solid #ece4f3; vertical-align: top; height: 100%">
-                        <h4 style="letter-spacing: -0.015em; font-weight: 700; color: #171717; margin: 0 0 3px; font-size: 14.5px"><img class="mk-dia" alt="" src="./assets/icons/ic-diamond.png" style="max-width: 100%; display: inline-block; width: 9px; height: 9px; margin: 0 15px 0 -24px">Probability follows the stage</h4>
+                        <h4 style="letter-spacing: -0.015em; font-weight: 700; color: #171717; margin: 0 0 3px; font-size: 14.5px"><img class="mk-dia" alt="" src="./assets/icons/ic-diamond.png" style="max-width: none; display: inline-block; width: 9px; height: 9px; margin: 0 15px 0 -24px; min-width: 9px">Probability follows the stage</h4>
                         <p style="margin: 0; font-size: 12.5px; color: #737373; line-height: 1.55">
                            Move an opportunity and its probability takes the
                            stage's value.
                         </p>
                      </td>
                      <td class="feat" style="padding: 15px 0 15px 26px; border-top: 1px solid #ece4f3; vertical-align: top; height: 100%">
-                        <h4 style="letter-spacing: -0.015em; font-weight: 700; color: #171717; margin: 0 0 3px; font-size: 14.5px"><img class="mk-dia" alt="" src="./assets/icons/ic-diamond.png" style="max-width: 100%; display: inline-block; width: 9px; height: 9px; margin: 0 15px 0 -24px">A Probability Revenue field</h4>
+                        <h4 style="letter-spacing: -0.015em; font-weight: 700; color: #171717; margin: 0 0 3px; font-size: 14.5px"><img class="mk-dia" alt="" src="./assets/icons/ic-diamond.png" style="max-width: none; display: inline-block; width: 9px; height: 9px; margin: 0 15px 0 -24px; min-width: 9px">A Probability Revenue field</h4>
                         <p style="margin: 0; font-size: 12.5px; color: #737373; line-height: 1.55">
                            Expected revenue multiplied by the probability, kept
                            up to date for you.
                         </p>
                      </td>
                      </tr><tr><td class="feat" style="padding: 15px 0 15px 26px; border-top: 1px solid #ece4f3; vertical-align: top; height: 100%">
-                        <h4 style="letter-spacing: -0.015em; font-weight: 700; color: #171717; margin: 0 0 3px; font-size: 14.5px"><img class="mk-dia" alt="" src="./assets/icons/ic-diamond.png" style="max-width: 100%; display: inline-block; width: 9px; height: 9px; margin: 0 15px 0 -24px">A weighted total in the list view</h4>
+                        <h4 style="letter-spacing: -0.015em; font-weight: 700; color: #171717; margin: 0 0 3px; font-size: 14.5px"><img class="mk-dia" alt="" src="./assets/icons/ic-diamond.png" style="max-width: none; display: inline-block; width: 9px; height: 9px; margin: 0 15px 0 -24px; min-width: 9px">A weighted total in the list view</h4>
                         <p style="margin: 0; font-size: 12.5px; color: #737373; line-height: 1.55">
                            Probability Revenue is a sortable column with a sum
                            at the bottom.
                         </p>
                      </td>
                      <td class="feat" style="padding: 15px 0 15px 26px; border-top: 1px solid #ece4f3; vertical-align: top; height: 100%">
-                        <h4 style="letter-spacing: -0.015em; font-weight: 700; color: #171717; margin: 0 0 3px; font-size: 14.5px"><img class="mk-dia" alt="" src="./assets/icons/ic-diamond.png" style="max-width: 100%; display: inline-block; width: 9px; height: 9px; margin: 0 15px 0 -24px">Your stage percentages hold</h4>
+                        <h4 style="letter-spacing: -0.015em; font-weight: 700; color: #171717; margin: 0 0 3px; font-size: 14.5px"><img class="mk-dia" alt="" src="./assets/icons/ic-diamond.png" style="max-width: none; display: inline-block; width: 9px; height: 9px; margin: 0 15px 0 -24px; min-width: 9px">Your stage percentages hold</h4>
                         <p style="margin: 0; font-size: 12.5px; color: #737373; line-height: 1.55">
                            With the setting on, Odoo's own prediction stops
                            overwriting them.
@@ -567,7 +570,7 @@
                   work &mdash; and each one takes about ten minutes to set up.
                </p>
                <div class="ucgrid" style="display: block"><div style="margin: -11px -11px"><table class="lay" style="width: 100%; table-layout: fixed; border-collapse: separate; border-spacing: 11px 11px; height: 1px"><tbody><tr><td class="uc" style="border-width: 1px; border-style: solid; border-color: #27014014; background-color: #fff; border-radius: 14px; vertical-align: top; height: 100%"><table style="width: 100%; height: 100%; border-collapse: collapse"><tbody><tr><td style="vertical-align: top; padding: 0"><div class="uc-top" style="padding: 24px 24px 18px">
-                        <span class="uc-ico" style="width: auto; height: auto; border-radius: 13px; background-color: #270140; display: inline-block; margin-bottom: 16px; padding: 10px"><img src="./assets/icons/uc-ico-new.png" alt="" width="24" height="24" style="max-width: 100%; width: 24px; height: 24px; display: block"></span>
+                        <span class="uc-ico" style="width: auto; height: auto; border-radius: 13px; background-color: #270140; display: inline-block; margin-bottom: 16px; padding: 10px"><img src="./assets/icons/uc-ico-new.png" alt="" width="24" height="24" style="max-width: none; width: 24px; height: 24px; display: block; min-width: 24px"></span>
                         <h3 style="color: #270140; letter-spacing: -0.015em; margin: 0 0 9px; font-size: 18px; font-weight: 700; line-height: 1.32">Your Odoo is new and the pipeline is empty</h3>
                         <p style="margin: 0; font-size: 14px; line-height: 1.62; color: #525252">
                            A two-week-old database has no closed deals behind
@@ -579,7 +582,7 @@
                         </p>
                      </div>
                      </td></tr><tr><td style="vertical-align: bottom; padding: 0; height: 1px"><div class="uc-foot" style="background-color: #faf7fc; border-top: 1px solid #ece4f3; padding: 15px 24px 8px; display: block; border-radius: 0 0 14px 14px">
-                        <p class="uc-win" style="font-weight: 700; margin-bottom: 9px; margin: 0; font-size: 14px; line-height: 1.62; color: #525252"><img class="mk-dia-sm" alt="" src="./assets/icons/ic-diamond.png" style="max-width: 100%; display: inline-block; width: 8px; height: 8px; margin-right: 9px; vertical-align: middle">
+                        <p class="uc-win" style="font-weight: 700; margin-bottom: 9px; margin: 0; font-size: 14px; line-height: 1.62; color: #525252"><img class="mk-dia-sm" alt="" src="./assets/icons/ic-diamond.png" style="max-width: none; display: inline-block; width: 8px; height: 8px; margin-right: 9px; vertical-align: middle; min-width: 8px">
                            A forecast in your first week, not your first year
                         </p>
                         <a class="mini" href="#cps-showcase" style="color: #e85c52; margin-bottom: 9px; font-size: 12.5px; font-weight: 700; text-decoration: none; white-space: nowrap">See the four screens &rarr;</a>
@@ -587,7 +590,7 @@
                   </td></tr></tbody></table></td>
 
                   <td class="uc" style="border-width: 1px; border-style: solid; border-color: #27014014; background-color: #fff; border-radius: 14px; vertical-align: top; height: 100%"><table style="width: 100%; height: 100%; border-collapse: collapse"><tbody><tr><td style="vertical-align: top; padding: 0"><div class="uc-top" style="padding: 24px 24px 18px">
-                        <span class="uc-ico" style="width: auto; height: auto; border-radius: 13px; background-color: #270140; display: inline-block; margin-bottom: 16px; padding: 10px"><img src="./assets/icons/uc-ico-review.png" alt="" width="24" height="24" style="max-width: 100%; width: 24px; height: 24px; display: block"></span>
+                        <span class="uc-ico" style="width: auto; height: auto; border-radius: 13px; background-color: #270140; display: inline-block; margin-bottom: 16px; padding: 10px"><img src="./assets/icons/uc-ico-review.png" alt="" width="24" height="24" style="max-width: none; width: 24px; height: 24px; display: block; min-width: 24px"></span>
                         <h3 style="color: #270140; letter-spacing: -0.015em; margin: 0 0 9px; font-size: 18px; font-weight: 700; line-height: 1.32">
                            Your pipeline review stalls on &ldquo;why 43%?&rdquo;
                         </h3>
@@ -601,7 +604,7 @@
                         </p>
                      </div>
                      </td></tr><tr><td style="vertical-align: bottom; padding: 0; height: 1px"><div class="uc-foot" style="background-color: #faf7fc; border-top: 1px solid #ece4f3; padding: 15px 24px 8px; display: block; border-radius: 0 0 14px 14px">
-                        <p class="uc-win" style="font-weight: 700; margin-bottom: 9px; margin: 0; font-size: 14px; line-height: 1.62; color: #525252"><img class="mk-dia-sm" alt="" src="./assets/icons/ic-diamond.png" style="max-width: 100%; display: inline-block; width: 8px; height: 8px; margin-right: 9px; vertical-align: middle">
+                        <p class="uc-win" style="font-weight: 700; margin-bottom: 9px; margin: 0; font-size: 14px; line-height: 1.62; color: #525252"><img class="mk-dia-sm" alt="" src="./assets/icons/ic-diamond.png" style="max-width: none; display: inline-block; width: 8px; height: 8px; margin-right: 9px; vertical-align: middle; min-width: 8px">
                            Reviews about deals, not about decimals
                         </p>
                         <a class="mini" href="#cps-how" style="color: #e85c52; margin-bottom: 9px; font-size: 12.5px; font-weight: 700; text-decoration: none; white-space: nowrap">See the calculation &rarr;</a>
@@ -609,7 +612,7 @@
                   </td></tr></tbody></table></td>
 
                   </tr><tr><td class="uc" style="border-width: 1px; border-style: solid; border-color: #27014014; background-color: #fff; border-radius: 14px; vertical-align: top; height: 100%"><table style="width: 100%; height: 100%; border-collapse: collapse"><tbody><tr><td style="vertical-align: top; padding: 0"><div class="uc-top" style="padding: 24px 24px 18px">
-                        <span class="uc-ico" style="width: auto; height: auto; border-radius: 13px; background-color: #270140; display: inline-block; margin-bottom: 16px; padding: 10px"><img src="./assets/icons/uc-ico-teams.png" alt="" width="24" height="24" style="max-width: 100%; width: 24px; height: 24px; display: block"></span>
+                        <span class="uc-ico" style="width: auto; height: auto; border-radius: 13px; background-color: #270140; display: inline-block; margin-bottom: 16px; padding: 10px"><img src="./assets/icons/uc-ico-teams.png" alt="" width="24" height="24" style="max-width: none; width: 24px; height: 24px; display: block; min-width: 24px"></span>
                         <h3 style="color: #270140; letter-spacing: -0.015em; margin: 0 0 9px; font-size: 18px; font-weight: 700; line-height: 1.32">Two sales teams that close at different rates</h3>
                         <p style="margin: 0; font-size: 14px; line-height: 1.62; color: #525252">
                            New business and renewals rarely convert alike, and
@@ -621,7 +624,7 @@
                         </p>
                      </div>
                      </td></tr><tr><td style="vertical-align: bottom; padding: 0; height: 1px"><div class="uc-foot" style="background-color: #faf7fc; border-top: 1px solid #ece4f3; padding: 15px 24px 8px; display: block; border-radius: 0 0 14px 14px">
-                        <p class="uc-win" style="font-weight: 700; margin-bottom: 9px; margin: 0; font-size: 14px; line-height: 1.62; color: #525252"><img class="mk-dia-sm" alt="" src="./assets/icons/ic-diamond.png" style="max-width: 100%; display: inline-block; width: 8px; height: 8px; margin-right: 9px; vertical-align: middle">
+                        <p class="uc-win" style="font-weight: 700; margin-bottom: 9px; margin: 0; font-size: 14px; line-height: 1.62; color: #525252"><img class="mk-dia-sm" alt="" src="./assets/icons/ic-diamond.png" style="max-width: none; display: inline-block; width: 8px; height: 8px; margin-right: 9px; vertical-align: middle; min-width: 8px">
                            One free module, a forecast per team
                         </p>
                         <a class="mini" href="#cps-faqs" style="color: #e85c52; margin-bottom: 9px; font-size: 12.5px; font-weight: 700; text-decoration: none; white-space: nowrap">How stages are shared &rarr;</a>
@@ -629,7 +632,7 @@
                   </td></tr></tbody></table></td>
 
                   <td class="uc" style="border-width: 1px; border-style: solid; border-color: #27014014; background-color: #fff; border-radius: 14px; vertical-align: top; height: 100%"><table style="width: 100%; height: 100%; border-collapse: collapse"><tbody><tr><td style="vertical-align: top; padding: 0"><div class="uc-top" style="padding: 24px 24px 18px">
-                        <span class="uc-ico" style="width: auto; height: auto; border-radius: 13px; background-color: #270140; display: inline-block; margin-bottom: 16px; padding: 10px"><img src="./assets/icons/uc-ico-report.png" alt="" width="24" height="24" style="max-width: 100%; width: 24px; height: 24px; display: block"></span>
+                        <span class="uc-ico" style="width: auto; height: auto; border-radius: 13px; background-color: #270140; display: inline-block; margin-bottom: 16px; padding: 10px"><img src="./assets/icons/uc-ico-report.png" alt="" width="24" height="24" style="max-width: none; width: 24px; height: 24px; display: block; min-width: 24px"></span>
                         <h3 style="color: #270140; letter-spacing: -0.015em; margin: 0 0 9px; font-size: 18px; font-weight: 700; line-height: 1.32">Someone needs a pipeline number this afternoon</h3>
                         <p style="margin: 0; font-size: 14px; line-height: 1.62; color: #525252">
                            Group your opportunities by stage and read the
@@ -641,7 +644,7 @@
                         </p>
                      </div>
                      </td></tr><tr><td style="vertical-align: bottom; padding: 0; height: 1px"><div class="uc-foot" style="background-color: #faf7fc; border-top: 1px solid #ece4f3; padding: 15px 24px 8px; display: block; border-radius: 0 0 14px 14px">
-                        <p class="uc-win" style="font-weight: 700; margin-bottom: 9px; margin: 0; font-size: 14px; line-height: 1.62; color: #525252"><img class="mk-dia-sm" alt="" src="./assets/icons/ic-diamond.png" style="max-width: 100%; display: inline-block; width: 8px; height: 8px; margin-right: 9px; vertical-align: middle">
+                        <p class="uc-win" style="font-weight: 700; margin-bottom: 9px; margin: 0; font-size: 14px; line-height: 1.62; color: #525252"><img class="mk-dia-sm" alt="" src="./assets/icons/ic-diamond.png" style="max-width: none; display: inline-block; width: 8px; height: 8px; margin-right: 9px; vertical-align: middle; min-width: 8px">
                            A defensible number in under a minute
                         </p>
                         <a class="mini" href="#cps-features" style="color: #e85c52; margin-bottom: 9px; font-size: 12.5px; font-weight: 700; text-decoration: none; white-space: nowrap">See the weighted total &rarr;</a>
@@ -1258,7 +1261,7 @@
                   <span class="xs-chip" style="border-width: 1px; border-style: solid; border-color: #ece4f3; font-size: 13px; font-weight: 600; color: #270140; background-color: #fff; padding: 8px 18px; border-radius: 9999px; display: inline-block; margin: 0 10px 10px 0">Limits stated up front</span>
                </div>
                <div class="xsell" style="display: block"><div style="margin: -10px -10px"><table class="lay" style="width: 100%; table-layout: fixed; border-collapse: separate; border-spacing: 10px 10px; height: 1px"><tbody><tr><td class="xitem xitem-lead" style="border-width: 1px; border-style: solid; border-color: #27014014; background-color: #270140; border-radius: 14px; padding: 24px 24px 22px; vertical-align: top; height: 100%"><table style="width: 100%; height: 100%; border-collapse: collapse"><tbody><tr><td style="vertical-align: top; padding: 0"><div class="xt" style="display: block; margin-bottom: 18px">
-                        <table class="lay" style="width: 100%; border-collapse: collapse; border-spacing: 0px 0px"><tbody><tr><td style="vertical-align: top"><img class="xico" height="36" src="./assets/icons/xs-growth-suite.png" alt="" width="36" style="max-width: 100%; width: 36px; height: 36px; display: block"></td><td style="vertical-align: top; text-align: right"><span class="xp" style="font-size: 10.5px; font-weight: 800; letter-spacing: 0.07em; text-transform: uppercase; color: #fff; background-color: #ffffff21; padding: 5px 11px; border-radius: 9999px; white-space: nowrap">$349 once</span>
+                        <table class="lay" style="width: 100%; border-collapse: collapse; border-spacing: 0px 0px"><tbody><tr><td style="vertical-align: top"><img class="xico" height="36" src="./assets/icons/xs-growth-suite.png" alt="" width="36" style="max-width: none; width: 36px; height: 36px; display: block; min-width: 36px"></td><td style="vertical-align: top; text-align: right"><span class="xp" style="font-size: 10.5px; font-weight: 800; letter-spacing: 0.07em; text-transform: uppercase; color: #fff; background-color: #ffffff21; padding: 5px 11px; border-radius: 9999px; white-space: nowrap">$349 once</span>
                      </td></tr></tbody></table></div>
                      <h3 style="letter-spacing: -0.015em; color: #fff; margin: 0 0 9px; font-size: 17.5px; font-weight: 700">Doodex Growth Suite</h3>
                      <p style="margin: 0 0 20px; font-size: 14px; line-height: 1.6; color: #ffffffc7">
@@ -1270,7 +1273,7 @@
                   </td></tr></tbody></table></td>
 
                   <td class="xitem" style="border-width: 1px; border-style: solid; border-color: #27014014; background-color: #fff; border-radius: 14px; padding: 24px 24px 22px; vertical-align: top; height: 100%"><table style="width: 100%; height: 100%; border-collapse: collapse"><tbody><tr><td style="vertical-align: top; padding: 0"><div class="xt" style="display: block; margin-bottom: 18px">
-                        <table class="lay" style="width: 100%; border-collapse: collapse; border-spacing: 0px 0px"><tbody><tr><td style="vertical-align: top"><img class="xico" height="36" src="./assets/icons/xs-flow-reader.png" alt="" width="36" style="max-width: 100%; width: 36px; height: 36px; display: block"></td><td style="vertical-align: top; text-align: right"><span class="xp" style="font-size: 10.5px; font-weight: 800; letter-spacing: 0.07em; text-transform: uppercase; color: #270140; background-color: #f4eef8; padding: 5px 11px; border-radius: 9999px; white-space: nowrap">Free</span>
+                        <table class="lay" style="width: 100%; border-collapse: collapse; border-spacing: 0px 0px"><tbody><tr><td style="vertical-align: top"><img class="xico" height="36" src="./assets/icons/xs-flow-reader.png" alt="" width="36" style="max-width: none; width: 36px; height: 36px; display: block; min-width: 36px"></td><td style="vertical-align: top; text-align: right"><span class="xp" style="font-size: 10.5px; font-weight: 800; letter-spacing: 0.07em; text-transform: uppercase; color: #270140; background-color: #f4eef8; padding: 5px 11px; border-radius: 9999px; white-space: nowrap">Free</span>
                      </td></tr></tbody></table></div>
                      <h3 style="color: #270140; letter-spacing: -0.015em; margin: 0 0 9px; font-size: 17.5px; font-weight: 700">Flow Survey Reader</h3>
                      <p style="margin: 0 0 20px; font-size: 14px; line-height: 1.6; color: #525252">
@@ -1281,7 +1284,7 @@
                   </td></tr></tbody></table></td>
 
                   <td class="xitem" style="border-width: 1px; border-style: solid; border-color: #27014014; background-color: #fff; border-radius: 14px; padding: 24px 24px 22px; vertical-align: top; height: 100%"><table style="width: 100%; height: 100%; border-collapse: collapse"><tbody><tr><td style="vertical-align: top; padding: 0"><div class="xt" style="display: block; margin-bottom: 18px">
-                        <table class="lay" style="width: 100%; border-collapse: collapse; border-spacing: 0px 0px"><tbody><tr><td style="vertical-align: top"><img class="xico" height="36" src="./assets/icons/xs-flow-builder.png" alt="" width="36" style="max-width: 100%; width: 36px; height: 36px; display: block"></td><td style="vertical-align: top; text-align: right"><span class="xp" style="font-size: 10.5px; font-weight: 800; letter-spacing: 0.07em; text-transform: uppercase; color: #270140; background-color: #f4eef8; padding: 5px 11px; border-radius: 9999px; white-space: nowrap">$199 once</span>
+                        <table class="lay" style="width: 100%; border-collapse: collapse; border-spacing: 0px 0px"><tbody><tr><td style="vertical-align: top"><img class="xico" height="36" src="./assets/icons/xs-flow-builder.png" alt="" width="36" style="max-width: none; width: 36px; height: 36px; display: block; min-width: 36px"></td><td style="vertical-align: top; text-align: right"><span class="xp" style="font-size: 10.5px; font-weight: 800; letter-spacing: 0.07em; text-transform: uppercase; color: #270140; background-color: #f4eef8; padding: 5px 11px; border-radius: 9999px; white-space: nowrap">$199 once</span>
                      </td></tr></tbody></table></div>
                      <h3 style="color: #270140; letter-spacing: -0.015em; margin: 0 0 9px; font-size: 17.5px; font-weight: 700">Flow Survey Builder</h3>
                      <p style="margin: 0 0 20px; font-size: 14px; line-height: 1.6; color: #525252">
