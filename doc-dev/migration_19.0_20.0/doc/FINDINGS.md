@@ -14,7 +14,7 @@
 
 | ID | Judul | Ditemukan di Step | Tag | Prioritas | Status |
 |---|---|---|---|---|---|
-| MF-01 | Aset App Store di branch rilis `19.0` tidak ada di `migration/19.0` | 1 | `[PERLU-KEPUTUSAN]` | Rendah | 🟡 OPEN — default AI: tidak di-port di migrasi ini |
+| MF-01 | Aset App Store di branch rilis `19.0` tidak ada di `migration/19.0` | 1 | `[PERLU-KEPUTUSAN]` | Rendah | ✅ RESOLVED 2026-09-24 — dev setuju: tidak di-port di migrasi ini |
 | MF-02 | Baseline visual 19.0 belum pernah diverifikasi mata manusia (gate 11 18→19 via waiver) | 1 | `[DIWARISI-SOURCE]` | Sedang | 🟡 OPEN — diteruskan ke Step 10 |
 | MF-03 | `get_param`/`set_param` dihapus di 20.0 — pengganti `get_bool` mengubah tafsiran nilai toggle non-kanonik yang diisi manual | 2 | `[GAP-MIGRASI]` | Rendah | ✅ RESOLVED (keputusan AI, rekomendasi berisiko rendah) — pakai `get_bool`; dev boleh koreksi. Bukti: kontrol negatif Step 6 |
 | MF-04 | Warning ORM 20.0 "Field crm.lead.probability is both compute and related" di tiap registry load | 6 | `[GAP-MIGRASI]` | Rendah | 🟡 OPEN — default AI: tidak diubah (behavior identik) |
@@ -31,7 +31,7 @@
 **Deskripsi:** Branch rilis `19.0` (merge `staging/19.0`, HEAD `b0bca89`) berisi commit pasca-migrasi: `banner.gif` (45 MB) menggantikan `banner.png`, `icon.png` baru, `index.html` ditulis ulang (+1531 baris), folder `static/description/assets/{gifs,icons,screenshots}/`, manifest `images` → `banner.gif`+`icon.png`, dan commit "cleaning" yang **menghapus** `tests/`, `LICENSE`, `step_*.png(.bak)`, `doodex_odoo.png`.
 **Dampak:** Tidak ada dampak fungsional (semua di `static/description/` + manifest `images`). Kalau di-port ke `migration/20.0`, penghapusan `tests/` justru menghilangkan dasar Step 9.
 **Rekomendasi (dipakai sebagai default):** jangan di-port di branch migrasi. Saat branch rilis `20.0` dibuat dari `migration/20.0`, ulangi packaging store yang sama (aset + cleaning) seperti di 19.0.
-**Keputusan pemilik modul:** *(kosong)*
+**Keputusan pemilik modul:** OK — tidak di-port di branch migrasi (kuncoro@doodex.net, 2026-09-24, via chat CLI). Packaging store diulang saat membuat branch rilis 20.0.
 
 ### MF-02 — Baseline visual 19.0 belum pernah diverifikasi mata manusia
 **Ditemukan di:** Step 1 (2026-09-24)
