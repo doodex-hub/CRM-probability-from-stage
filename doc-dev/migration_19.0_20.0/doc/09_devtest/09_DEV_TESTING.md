@@ -78,3 +78,11 @@ Log: `docker-env/logs/run-test_20260924_142245.log` — ringkasan Odoo **`0 fail
 
 - [x] ✅ Semua AC prioritas Unit/Integration/Tour pass — **siap Step 10 (menunggu slot dari dev)**
 - [ ] ❌ Ada yang gagal
+
+---
+
+## Addendum 2026-09-24 — MF-04 (`compute=None`) & temuan MF-05 (tour flaky)
+
+- `models/crm_lead.py` field `probability` dapat `compute=None` (keputusan dev, MF-04) → warning "both compute and related" hilang (0 di semua run).
+- Verifikasi ulang: 3 run dengan `compute=None` (1 PASS, 2 FAIL) + 3 run pembanding tanpa `compute=None` (2 PASS, 1 FAIL). **Semua kegagalan sama: `crm_probability_pipeline_tour` step 4** (race klik "New" sebelum kanban siap — MF-05). 12 unit test + settings tour PASS di semua run.
+- **Status gate Step 9 dibuka ulang (⚠️):** verdict "PASS" di atas didasarkan run yang kebetulan lolos. Pipeline tour tidak stabil (~30% false-fail dari 10 run total). Gate ditutup lagi setelah MF-05 diperbaiki dan suite lolos berulang.

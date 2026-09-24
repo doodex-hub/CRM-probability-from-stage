@@ -143,7 +143,7 @@ Ringkasan cepat — detail lengkap tiap step ada di field `Status:` di header ma
 | 6 | Code Migration | kode `crm_probability_from_stage/` + `06c_IMPLEMENTATION_LOG.md` | ✅ Selesai 2026-09-24 (G1 PASS, G2 14/14 PASS, 2 kontrol negatif merah) | — (disiplin per-fase A1→G2) |
 | 7 | Data Migration Scripts | `07_DATA_MIGRATION_PLAN.md` + script — cuma kalau upgrade instance | N/A (port kode saja, intake §3) | — |
 | 8 | Code Review | `08_CODE_REVIEW.md` | ✔️ Selesai 2026-09-24 (skill odoo-review; 0 🔴 0 🟡 5 🔵) | ✔️ Lulus |
-| 9 | Dev Testing | `09_DEV_TESTING.md` | ✔️ Selesai 2026-09-24 (run-test.sh: 16 tests, 0 failed, 0 error) | ✔️ Lulus |
+| 9 | Dev Testing | `09_DEV_TESTING.md` | ⚠️ Dibuka ulang 2026-09-24 — pipeline tour flaky (MF-05), unit test PASS | ⏳ Menunggu keputusan MF-05 |
 | 10 | QA Testing | `10_BUSINESS_FLOW_MIGRATION.md` | ⏸️ Siap mulai — MENUNGGU SLOT dari dev (batas konkurensi Step 10, MF-46) | — |
 | 11 | UAT Sign-off | `11_UAT_CHECKLIST.md` | ⬜ Belum mulai | — |
 

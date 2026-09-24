@@ -17,7 +17,8 @@
 | MF-01 | Aset App Store di branch rilis `19.0` tidak ada di `migration/19.0` | 1 | `[PERLU-KEPUTUSAN]` | Rendah | ✅ RESOLVED 2026-09-24 — dev setuju: tidak di-port di migrasi ini |
 | MF-02 | Baseline visual 19.0 belum pernah diverifikasi mata manusia (gate 11 18→19 via waiver) | 1 | `[DIWARISI-SOURCE]` | Sedang | 🟡 OPEN — diteruskan ke Step 10 |
 | MF-03 | `get_param`/`set_param` dihapus di 20.0 — pengganti `get_bool` mengubah tafsiran nilai toggle non-kanonik yang diisi manual | 2 | `[GAP-MIGRASI]` | Rendah | ✅ RESOLVED (keputusan AI, rekomendasi berisiko rendah) — pakai `get_bool`; dev boleh koreksi. Bukti: kontrol negatif Step 6 |
-| MF-04 | Warning ORM 20.0 "Field crm.lead.probability is both compute and related" di tiap registry load | 6 | `[GAP-MIGRASI]` | Rendah | 🟡 OPEN — default AI: tidak diubah (behavior identik) |
+| MF-04 | Warning ORM 20.0 "Field crm.lead.probability is both compute and related" di tiap registry load | 6 | `[GAP-MIGRASI]` | Rendah | ✅ RESOLVED 2026-09-24 — dev pilih opsi 2: `compute=None` ditambahkan, warning hilang |
+| MF-05 | Tour `crm_probability_pipeline_tour` flaky di 20.0 (race klik "New" sebelum kanban siap) | 9 (rerun) | `[GAP-MIGRASI]` | Sedang | 🟡 OPEN — menunggu keputusan dev (usulan: trigger pola core `body:has(.o_kanban_renderer)`) |
 
 ---
 
@@ -64,6 +65,17 @@
 **Dampak:** Tidak ada dampak fungsional (AC-02-01 + tour PASS). Log produksi berisik.
 **Opsi:** (1) biarkan — identik 19.0, patuh larangan refactor; (2) tambah `compute=None` di definisi field — menghilangkan warning, perilaku sama persis dengan yang ORM lakukan sekarang, perubahan 1 atribut.
 **Rekomendasi:** opsi (1) sebagai default migrasi (bukan wajib kompatibilitas); opsi (2) aman kalau dev ingin log bersih.
+**Keputusan pemilik modul:** opsi (2) — tambah `compute=None` (kuncoro@doodex.net, 2026-09-24, via chat CLI). Diterapkan `models/crm_lead.py:9-13`.
+**Bukti:** 3 run dengan `compute=None` → 0 warning "both compute and related" di semua run; hasil test 1× PASS, 2× FAIL di tour pipeline step 4. 3 run pembanding TANPA `compute=None` → warning 10×/run, hasil 2× PASS, 1× FAIL di step 4 yang sama → kegagalan tour tidak disebabkan `compute=None` (lihat MF-05). Unit test (12) PASS di semua 6 run.
+
+### MF-05 — Tour `crm_probability_pipeline_tour` flaky di 20.0
+**Ditemukan di:** rerun Step 9 (2026-09-24), saat verifikasi MF-04.
+**Tag:** `[GAP-MIGRASI]`
+**Ref:** AC-02-01, AC-03-01, AC-03-03; `09_DEV_TESTING.md`; DIFF-09.
+**Lokasi:** `static/tests/tours/crm_probability_pipeline_tour.js` step 3 (`trigger: ".o-kanban-button-new"`).
+**Deskripsi:** Total 10 run di 20.0: 7 PASS, 3 FAIL, semua gagal di step 4 (`.o_field_widget[name=name] input` tidak ditemukan dalam 10 detik). Timing log: di run gagal tombol "New" diklik ±0,02–0,07 dtk setelah `web_read_group` kanban kembali, dan view quick-create tidak pernah dimuat; di run lolos jedanya ±0,2–0,3 dtk. Tombol "New" di control panel sudah ada sebelum renderer kanban siap. Tour core `crm` 20.0 untuk alur yang sama (`crm/static/tests/tours/crm_rainbowman.js`) memakai trigger `body:has(.o_kanban_renderer) .o-kanban-button-new` untuk menunggu renderer.
+**Dampak:** Bukan bug modul/produk — test otomatis tidak stabil (±30% false-fail). Klaim Step 9 "4/4 PASS" ternyata kebetulan.
+**Rekomendasi:** ubah trigger step 3 ke pola core, lalu jalankan suite beberapa kali untuk membuktikan stabil.
 **Keputusan pemilik modul:** *(kosong)*
 
 ---

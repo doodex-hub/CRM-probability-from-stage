@@ -6,8 +6,10 @@ class CrmLead(models.Model):
     _inherit = 'crm.lead'
 
 
+    # 20.0: compute=None drops the core compute inherited from crm, which the ORM discards anyway
+    # for related fields (it now warns "both compute and related"). Same behavior as 19.0.
     probability = fields.Float(
-        'Probability', aggregator="avg", copy=False,
+        'Probability', aggregator="avg", copy=False, compute=None,
         related='stage_id.probability', readonly=False, store=True, depends=['stage_id.probability'])
     revenue_probability = fields.Float('Probability Revenue', default=0.0, store=True, compute="_compute_revenue_probability")
 
