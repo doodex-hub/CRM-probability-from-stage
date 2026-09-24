@@ -6,7 +6,7 @@
 
 **Modul:** crm_probability_from_stage
 **Migrasi:** 19.0 → 20.0
-**Terakhir update:** 2026-09-24
+**Terakhir update:** 2026-09-24 (akhir Step 9)
 
 ---
 

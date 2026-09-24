@@ -17,7 +17,7 @@ Kamu adalah migration copilot untuk project migrasi Odoo custom module berikut:
 - **Source masih aktif dikembangkan selama migrasi?** Tidak (asumsi — branch `migration/19.0` adalah hasil akhir migrasi 18→19 yang sudah tuntas). Konfirmasi di Step 1; kalau Ya, ikuti `SYNC_POLICY.md`.
 - **Environment eksekusi:** Claude Code CLI
 - **Git eksekusi:** Ya — Mode Git aktif, dideteksi dari `.claude/settings.json` (varian `settings.json.mode-git.template`, bootstrap 2026-08-26, path referensi diperbarui untuk 19.0→20.0 pada 2026-09-24). AI boleh `fetch`/`checkout`/`commit`/`diff`/`log`/`show` di `target-codebase` (repo ini) sesuai `migration-tool/ai-doc/USAGE_GUIDE.md` "Mode Git", **tidak pernah** `push`/merge/force-push/PR. Auto-commit di `target-codebase` WAJIB tepat setelah tiap step (bukan cuma gate). `git push` 100% manual dev.
-- **Mulai:** 2026-09-24 (conditioning; Step 1 belum mulai)
+- **Mulai:** 2026-09-24 (conditioning + Step 1–9 di hari yang sama; Step 10 menunggu slot dev)
 
 Begitu sesi ini dibuka, langsung kenalkan diri sebagai migration copilot dan lanjutkan dari "Status saat ini" di bawah — jangan tunggu user menjelaskan project dari nol.
 
@@ -116,12 +116,16 @@ Cross-cutting, LATEN: `HOTFIX_REVIEW.md` + `HOTFIX_LOG.md` di root `doc/` — di
 
 ## Status saat ini
 
-**Step 0 — Conditioning selesai (2026-09-24).** Branch `migration/20.0` dibuat dari `migration/19.0` (HEAD `ab189bf`, "Step 11 gate closed via explicit dev waiver"). `.claude/settings.json` diperbarui (deny list native 19/20, `git show` diizinkan, `_status` template DRAFT lama diganti), CLAUDE.md ini ditulis ulang, skeleton `doc-dev/migration_19.0_20.0/doc/` dibuat (folder kosong + `.gitkeep`). **Step 1 Intake belum mulai** — sesi eksekusi berikutnya mulai dari Step 1.
+**Step 1–9 selesai & gate lulus (2026-09-24), satu sesi CLI mode jalan-terus.** Commit: Step 1 `3c1a98b`, 2 `b15f813`, 3 `0b99e35`, 4 `56e7454`, 5 `dc93bcd`, 6 `8f8d3c3`, 8 `89eac22`, 9 = commit gate Step 9 (lihat `git log`). Step 7 N/A.
 
-Open item untuk Step 1 intake (dicatat saat conditioning, belum diputuskan):
-- CLAUDE.md lama menyebut branch hasil migrasi `migration/19.0_target`, tapi nama aktual branch-nya `migration/19.0` (lokal = `origin/migration/19.0`). Semua rujukan di file ini sudah pakai nama aktual.
-- Step 11 migrasi 18→19 ditutup lewat **waiver eksplisit dev**, bukan sign-off UAT asli business user — baseline 19.0 untuk UI/visual (S-02 visibility field stage form, DIFF-04) belum pernah diverifikasi mata manusia.
-- Branch rilis `19.0`/`staging/19.0` berisi 5 commit pasca-migrasi yang TIDAK ada di `migration/19.0` (commit "cleaning" + aset store: `banner.gif`, `icon.png`, `index.html`, fix key `images` di manifest — manifest di `migration/19.0` masih menunjuk `banner.png`). Putuskan di intake apakah aset store perlu di-port ke 20.0.
+**⏸️ BERHENTI SEBELUM STEP 10 — atas instruksi eksplisit dev:** Step 10 (QA live, browser + Docker) dibatasi konkurensi (maks. 2 repo kecil bersamaan, atau 1 repo besar sendirian — MF-46). **JANGAN mulai Step 10 sampai dev bilang giliran repo ini.** Sesi berikutnya: tunggu aba-aba dev, lalu mulai Step 10 dari `05b_TEST_PLAN_MIGRATION.md` §Step 10.
+
+Ringkasan hasil:
+- Perubahan kode: manifest `20.0.1.0`; `get_param`→`get_bool` di `_compute_is_automated_probability` & `_compute_show_probability` (DIFF-01 kritis: `get_param`/`set_param` dihapus di 20.0; DIFF-02: OFF kini disimpan `'False'`, jadi `get_str` akan membalik toggle); test disesuaikan + 1 test baru (AC-01-05); README versi; `docker-env/` baru untuk 20.0 (source-run `odoo20`, port 8179) + `run-test.sh`.
+- Step 9: `./run-test.sh odoo_target target_db crm_probability_from_stage` → 16 tests, 0 failed, 0 error. Kontrol negatif membuktikan test menangkap DIFF-01/02.
+- Untuk Step 10: WAJIB buka **form opportunity** + **form stage** (toggle ON & OFF) — tour kanban/list/settings terbukti tidak memicu compute yang rusak di 19.0-code. Screenshot form stage (field Probability pindah ke grup pertama, DIFF-05) + Settings (MF-02).
+- FINDINGS terbuka untuk dev: MF-01 (aset store tidak di-port), MF-02 (visual → Step 10), MF-04 (warning ORM compute+related, default tidak diubah). MF-03 resolved (`get_bool`).
+- Step 10 server interaktif: lihat komentar di `docker-env/docker-compose.yml` (`docker compose run --rm --service-ports ...`, `--http-interface=0.0.0.0`).
 
 > AI: update bagian ini sendiri di akhir tiap sesi kerja, supaya sesi berikutnya tahu persis harus lanjut dari mana tanpa tanya ulang ke user.
 
@@ -139,8 +143,8 @@ Ringkasan cepat — detail lengkap tiap step ada di field `Status:` di header ma
 | 6 | Code Migration | kode `crm_probability_from_stage/` + `06c_IMPLEMENTATION_LOG.md` | ✅ Selesai 2026-09-24 (G1 PASS, G2 14/14 PASS, 2 kontrol negatif merah) | — (disiplin per-fase A1→G2) |
 | 7 | Data Migration Scripts | `07_DATA_MIGRATION_PLAN.md` + script — cuma kalau upgrade instance | N/A (port kode saja, intake §3) | — |
 | 8 | Code Review | `08_CODE_REVIEW.md` | ✔️ Selesai 2026-09-24 (skill odoo-review; 0 🔴 0 🟡 5 🔵) | ✔️ Lulus |
-| 9 | Dev Testing | `09_DEV_TESTING.md` | ⬜ Belum mulai | — |
-| 10 | QA Testing | `10_BUSINESS_FLOW_MIGRATION.md` | ⬜ Belum mulai | — |
+| 9 | Dev Testing | `09_DEV_TESTING.md` | ✔️ Selesai 2026-09-24 (run-test.sh: 16 tests, 0 failed, 0 error) | ✔️ Lulus |
+| 10 | QA Testing | `10_BUSINESS_FLOW_MIGRATION.md` | ⏸️ Siap mulai — MENUNGGU SLOT dari dev (batas konkurensi Step 10, MF-46) | — |
 | 11 | UAT Sign-off | `11_UAT_CHECKLIST.md` | ⬜ Belum mulai | — |
 
 Legenda status: ⬜ Belum mulai · 🔄 Sedang dikerjakan · ✅ Draft/selesai ditulis · ✔️ Disetujui/lulus gate.
