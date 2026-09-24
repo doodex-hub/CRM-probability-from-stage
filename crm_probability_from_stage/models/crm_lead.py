@@ -24,7 +24,9 @@ class CrmLead(models.Model):
         is considered as automatic, aka probability is sync with automated_probability.
         Doodex enhance: if in parameter is manually compute probability, then the value should following from stage."""
         for lead in self:
-            is_manually = self.env['ir.config_parameter'].sudo().get_param('crm.manual.compute.probability', False)
+            # 20.0: get_param() was removed; the Settings toggle now stores 'True'/'False' via
+            # set_bool(), so it must be read back with get_bool() ('False' would be truthy as a str).
+            is_manually = self.env['ir.config_parameter'].sudo().get_bool('crm.manual.compute.probability')
             if not is_manually:
                 lead.is_automated_probability = tools.float_compare(lead.probability, lead.automated_probability, 2) == 0
             else:

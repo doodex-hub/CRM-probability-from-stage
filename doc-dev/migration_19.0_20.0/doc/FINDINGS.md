@@ -16,7 +16,8 @@
 |---|---|---|---|---|---|
 | MF-01 | Aset App Store di branch rilis `19.0` tidak ada di `migration/19.0` | 1 | `[PERLU-KEPUTUSAN]` | Rendah | 🟡 OPEN — default AI: tidak di-port di migrasi ini |
 | MF-02 | Baseline visual 19.0 belum pernah diverifikasi mata manusia (gate 11 18→19 via waiver) | 1 | `[DIWARISI-SOURCE]` | Sedang | 🟡 OPEN — diteruskan ke Step 10 |
-| MF-03 | `get_param`/`set_param` dihapus di 20.0 — pengganti `get_bool` mengubah tafsiran nilai toggle non-kanonik yang diisi manual | 2 | `[GAP-MIGRASI]` | Rendah | ✅ RESOLVED (keputusan AI, rekomendasi berisiko rendah) — pakai `get_bool`; dev boleh koreksi |
+| MF-03 | `get_param`/`set_param` dihapus di 20.0 — pengganti `get_bool` mengubah tafsiran nilai toggle non-kanonik yang diisi manual | 2 | `[GAP-MIGRASI]` | Rendah | ✅ RESOLVED (keputusan AI, rekomendasi berisiko rendah) — pakai `get_bool`; dev boleh koreksi. Bukti: kontrol negatif Step 6 |
+| MF-04 | Warning ORM 20.0 "Field crm.lead.probability is both compute and related" di tiap registry load | 6 | `[GAP-MIGRASI]` | Rendah | 🟡 OPEN — default AI: tidak diubah (behavior identik) |
 
 ---
 
@@ -52,6 +53,18 @@
 **Dampak:** Opsi 1 = regresi fitur inti. Opsi 2 = beda hanya di edge case non-UI yang di 19.0 pun sudah tidak konsisten dengan checkbox (checkbox 19.0 akan tampil ter-centang untuk `'0'` juga, jadi di 19.0 konsisten; di 20.0 checkbox tampil tidak ter-centang untuk `'0'` dan modul ikut OFF — tetap konsisten satu sama lain).
 **Rekomendasi (dipakai):** opsi 2 `get_bool` — preseden core (`crm.lead.auto.assignment` dimigrasikan persis begini di `odoo20/addons/crm/models/crm_lead.py:2043`). Keputusan teknis berisiko rendah dengan satu opsi jelas lebih aman → diputuskan AI tanpa berhenti (USAGE_GUIDE "Eksekusi Berkelanjutan"), didokumentasikan di `03_MIGRATION_SPEC.md`.
 **Keputusan pemilik modul:** *(kosong — boleh koreksi)*
+**Bukti eksekusi (Step 6, 2026-09-24):** kode model 19.0 apa adanya di 20.0 → install PASS tapi 6 test `AttributeError: 'ir.config_parameter' object has no attribute 'get_param'` (kedua tour tetap PASS — tidak menangkapnya). Mutasi `get_str` → 5 test FAIL. Kode final `get_bool` → 14/14 PASS.
+
+### MF-04 — Warning ORM "Field crm.lead.probability is both compute and related"
+**Ditemukan di:** Step 6 (G1 #1, 2026-09-24)
+**Tag:** `[GAP-MIGRASI]`
+**Ref:** `DIFF-14`; `BSL-007`.
+**Lokasi:** `models/crm_lead.py` definisi `probability`; `odoo20/odoo/orm/fields.py:477-479`.
+**Deskripsi:** Redefinisi `probability` sebagai related mewarisi `compute='_compute_probabilities'` dari core. 20.0 mem-pop `compute` dan mencetak `UserWarning` di setiap load registry (5× per start di log G1). Di 19.0 hasil efektifnya sama (related menang lewat `setup_related`), hanya tanpa warning.
+**Dampak:** Tidak ada dampak fungsional (AC-02-01 + tour PASS). Log produksi berisik.
+**Opsi:** (1) biarkan — identik 19.0, patuh larangan refactor; (2) tambah `compute=None` di definisi field — menghilangkan warning, perilaku sama persis dengan yang ORM lakukan sekarang, perubahan 1 atribut.
+**Rekomendasi:** opsi (1) sebagai default migrasi (bukan wajib kompatibilitas); opsi (2) aman kalau dev ingin log bersih.
+**Keputusan pemilik modul:** *(kosong)*
 
 ---
 

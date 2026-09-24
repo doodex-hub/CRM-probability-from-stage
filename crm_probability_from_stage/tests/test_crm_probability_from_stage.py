@@ -5,9 +5,9 @@ from odoo.tests.common import TransactionCase, tagged
 
 @tagged('post_install', '-at_install')
 class TestCrmProbabilityFromStage(TransactionCase):
-    """Baseline-equivalence tests — 19.0 must reproduce 18.0 behavior documented in
-    doc-dev/migration_18.0_19.0/doc/01_intake/01b_BASELINE_SPEC.md (BSL-NNN) and
-    doc-dev/migration_18.0_19.0/doc/05_acceptance/05a_MIGRATION_ACCEPTANCE_CRITERIA.md (AC-NN-NN).
+    """Baseline-equivalence tests — 20.0 must reproduce 19.0 behavior documented in
+    doc-dev/migration_19.0_20.0/doc/01_intake/01b_BASELINE_SPEC.md (BSL-NNN) and
+    doc-dev/migration_19.0_20.0/doc/05_acceptance/05a_MIGRATION_ACCEPTANCE_CRITERIA.md (AC-NN-NN).
     """
 
     @classmethod
@@ -17,7 +17,8 @@ class TestCrmProbabilityFromStage(TransactionCase):
         cls.stage_b = cls.env['crm.stage'].create({'name': 'Test Stage B', 'probability': 60})
 
     def _set_toggle(self, value):
-        self.env['ir.config_parameter'].sudo().set_param(
+        # 20.0: set_param() was removed; set_bool() is what res.config.settings uses for this field.
+        self.env['ir.config_parameter'].sudo().set_bool(
             'crm.manual.compute.probability', value)
 
     def _make_lead(self, stage, expected_revenue=0.0, partner=False):
@@ -31,18 +32,35 @@ class TestCrmProbabilityFromStage(TransactionCase):
             vals['partner_id'] = partner.id
         return self.env['crm.lead'].create(vals)
 
-    # AC-01-01 / BSL-001 (corrected 2026-08-24, Step 9) — set_param(key, False) deletes the key
-    # entirely (Odoo core behavior for falsy values), so get_param then returns the Python `False`
-    # default rather than a string 'False'. Only the truthy case is stored as a string.
+    # AC-01-01 / BSL-001 — up to 19.0, set_param(key, False) deleted the key entirely. In 20.0
+    # set_bool(key, False) keeps the record and stores the string 'False' (native base change),
+    # so the raw value must never be read as a truthy string: get_bool() is the contract.
     def test_toggle_saves_config_parameter(self):
+        ICP = self.env['ir.config_parameter'].sudo()
         self._set_toggle(True)
-        self.assertEqual(
-            self.env['ir.config_parameter'].sudo().get_param('crm.manual.compute.probability'),
-            'True')
+        self.assertIs(ICP.get_bool('crm.manual.compute.probability'), True)
+        self.assertEqual(ICP.get_str('crm.manual.compute.probability'), 'True')
         self._set_toggle(False)
-        self.assertFalse(
-            self.env['ir.config_parameter'].sudo().get_param(
-                'crm.manual.compute.probability', False))
+        self.assertIs(ICP.get_bool('crm.manual.compute.probability'), False)
+        self.assertEqual(ICP.get_str('crm.manual.compute.probability'), 'False')
+
+    # AC-01-05 / BSL-001, BSL-004, BSL-009 — the real Settings path (set_values), ON then OFF,
+    # must drive both computes. Guards against reading the stored 'False' as a truthy string.
+    def test_settings_toggle_roundtrip_drives_computes(self):
+        lead = self._make_lead(self.stage_a)
+        lead.automated_probability = lead.probability
+
+        self.env['res.config.settings'].create({'crm_manual_compute_probability': True}).execute()
+        self.stage_a._compute_show_probability()
+        lead._compute_is_automated_probability()
+        self.assertTrue(self.stage_a.show_probability)
+        self.assertFalse(lead.is_automated_probability)
+
+        self.env['res.config.settings'].create({'crm_manual_compute_probability': False}).execute()
+        self.stage_a._compute_show_probability()
+        lead._compute_is_automated_probability()
+        self.assertFalse(self.stage_a.show_probability)
+        self.assertTrue(lead.is_automated_probability)
 
     # AC-01-02 / AC-01-02b
     def test_show_probability_computed(self):

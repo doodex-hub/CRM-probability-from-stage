@@ -1,20 +1,21 @@
-# Docker Environment — crm_probability_from_stage migration (18.0 -> 19.0)
-# Target-only (odoo_target + db_target) — source (18.0) baseline already fully
-# documented from static code reading (01b_BASELINE_SPEC.md, carried over
-# verified [MATCH] from migration_17.0_18.0), no need to spin up a parallel
-# 18.0 instance for this project.
+# Docker Environment — crm_probability_from_stage migration (19.0 -> 20.0)
+# Target-only (odoo_target + db_target). Odoo 20.0 runs from the native-target source tree
+# (D:/Kuncoro/doodex/repo/odoo20, mounted read-only) — no official odoo:20.0 image yet.
 #
-# Usage:
-#   docker compose up -d          # start db + install module, server stays up
-#   docker compose logs odoo_target -f
-#   docker compose down           # stop (keep volumes)
-#   docker compose down -v        # stop + wipe DB (fresh reinstall)
+# Usage (ALWAYS wipe the DB first, otherwise -i on an existing DB silently skips install+tests):
+#   docker compose down -v
+#   docker compose up --build --abort-on-container-exit odoo_target   # G1/G2: install + test suite
+#   docker compose logs odoo_target
+#
+# Interactive server (Step 10): run without --test-enable/--stop-after-init, e.g.
+#   docker compose run --rm --service-ports odoo_target -d target_db -i crm_probability_from_stage \
+#     --addons-path=/opt/odoo/addons,/opt/odoo/odoo/addons,/mnt/extra-addons --http-interface=0.0.0.0
 
-name: crm_probability_from_stage_18_19
+name: crm_probability_from_stage_19_20
 
 services:
   db_target:
-    image: postgres:15
+    image: postgres:16
     environment:
       POSTGRES_USER: odoo
       POSTGRES_PASSWORD: odoo
@@ -30,20 +31,25 @@ services:
     depends_on:
       - db_target
     ports:
-      - "8178:8069"
+      - "8179:8069"
     environment:
-      HOST: db_target
-      USER: odoo
-      PASSWORD: odoo
+      # libpq variables (the source-run image has no official entrypoint reading HOST/USER/PASSWORD)
+      PGHOST: db_target
+      PGUSER: odoo
+      PGPASSWORD: odoo
     volumes:
-      - ..:/mnt/extra-addons
+      - ../crm_probability_from_stage:/mnt/extra-addons/crm_probability_from_stage
       - ./logs:/var/log/odoo
-      - target_filestore:/var/lib/odoo
+      - D:/Kuncoro/doodex/repo/odoo20:/opt/odoo:ro
     command: >
-      odoo -d target_db -i crm_probability_from_stage
-      --addons-path=/usr/lib/python3/dist-packages/odoo/addons,/mnt/extra-addons
+      -d target_db
+      -i crm_probability_from_stage
+      --addons-path=/opt/odoo/addons,/opt/odoo/odoo/addons,/mnt/extra-addons
+      --http-interface=0.0.0.0
+      --test-enable
+      --test-tags=/crm_probability_from_stage
+      --stop-after-init
       --logfile=/var/log/odoo/odoo_target.log
 
 volumes:
   target_db_data:
-  target_filestore:

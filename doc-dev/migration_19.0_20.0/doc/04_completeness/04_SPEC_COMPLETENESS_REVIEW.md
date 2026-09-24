@@ -30,7 +30,7 @@
 | `tests/test_crm_probability_from_stage.py` | Ya — §2 | ✅ Covered | helper + 1 test disesuaikan + 1 test baru |
 | `tests/test_crm_probability_tour.py` | Ya — §2 | ✅ Covered | asersi `get_bool` |
 | `static/description/{banner.png,icon.png,index.html,assets/*}` | Ya — §4 Di Luar Scope (MF-01) | ✅ Covered | tidak diubah |
-| `README.md` (tertulis "Odoo version: 18.0") | Tidak eksplisit | ✅ Covered (sengaja tidak diubah) | Sudah usang sejak 19.0 (18→19 juga tidak mengubahnya); dokumentasi, bukan behavior. Branch rilis mengurus README-nya sendiri (MF-01). |
+| `README.md` (tertulis "Odoo version: 18.0") | Tidak eksplisit | ✅ Covered (sengaja tidak diubah) | Sudah usang sejak 19.0 (18→19 juga tidak mengubahnya); dokumentasi, bukan behavior. Branch rilis mengurus README-nya sendiri (MF-01). **Koreksi Step 6 (2026-09-24):** template `06a` Fase A6 mewajibkan perbaikan baris versi yang basi → diubah ke "Odoo version: 20.0" (lihat `06c_IMPLEMENTATION_LOG.md` A6). |
 | `LICENSE` | — | ✅ Covered | tidak diubah |
 | `controllers/`, `data/`, `report/`, `wizard/` | — | N/A | tidak ada di modul |
 | `docker-env/` (infra repo, bukan modul) | Tidak di 03 | ✅ Covered di Step 6 | ditulis ulang untuk 20.0 (image resmi `odoo:20.0` belum ada — build-from-source, pola `optional_field_save` 19→20) |

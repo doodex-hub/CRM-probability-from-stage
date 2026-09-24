@@ -23,5 +23,5 @@ class TestCrmProbabilitySettingsTour(HttpCase):
         self.start_tour("/odoo/settings?modules=crm", "crm_probability_settings_tour", login="admin")
         # Server-side assertion (more robust than a DOM read) that the toggle click genuinely
         # persisted, not just that the click event fired.
-        param = self.env['ir.config_parameter'].sudo().get_param('crm.manual.compute.probability')
-        self.assertEqual(param, 'True')
+        param = self.env['ir.config_parameter'].sudo().get_bool('crm.manual.compute.probability')
+        self.assertIs(param, True)

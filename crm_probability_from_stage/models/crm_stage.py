@@ -13,4 +13,5 @@ class CrmStage(models.Model):
     
     def _compute_show_probability(self):
         for stage in self:
-            stage.show_probability = self.env['ir.config_parameter'].sudo().get_param('crm.manual.compute.probability', False)
+            # 20.0: get_param() was removed - read the boolean toggle with get_bool().
+            stage.show_probability = self.env['ir.config_parameter'].sudo().get_bool('crm.manual.compute.probability')
