@@ -17,8 +17,8 @@
 | 8 — Code Review | 0 | 0 | idem |
 | 9 — Dev Testing | 0 | 0 | idem |
 | 10 — QA Testing | 1 | 0 | "lanjut step 10" (slot dari dev) |
-| 11 — UAT Sign-off | | | |
-| **Total** | 2 | 0 | Prompt keputusan MF-01/MF-04/MF-05 + status tidak dihitung terpisah (konten, bukan tool-fix) |
+| 11 — UAT Sign-off | 1 | 0 | "lanjut step 11 pakai waiver seperti 18→19" |
+| **Total** | 3 | 0 | Prompt keputusan MF-01/MF-04/MF-05 + status tidak dihitung terpisah (konten, bukan tool-fix) |
 
 ## Catatan Definisi
 

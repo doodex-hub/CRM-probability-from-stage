@@ -118,7 +118,7 @@ Cross-cutting, LATEN: `HOTFIX_REVIEW.md` + `HOTFIX_LOG.md` di root `doc/` — di
 
 **Step 1–9 selesai & gate lulus (2026-09-24), satu sesi CLI mode jalan-terus.** Commit: Step 1 `3c1a98b`, 2 `b15f813`, 3 `0b99e35`, 4 `56e7454`, 5 `dc93bcd`, 6 `8f8d3c3`, 8 `89eac22`, 9 = commit gate Step 9 (lihat `git log`). Step 7 N/A.
 
-**✔️ Step 10 selesai (2026-09-24, atas aba-aba dev "lanjut step 10"):** 6 skenario live (Playwright MCP, Odoo 20.0 Docker `qa_db`), semua `[DIKONFIRMASI]` Pass — lihat `10_qa/10_BUSINESS_FLOW_MIGRATION.md` + `10_qa/human_qa/` + `10_qa/screenshots/`. Container sudah dimatikan. **Berikutnya: Step 11 UAT** — AI hanya menulis `11_UAT_CHECKLIST.md`; eksekusi & sign-off wajib manusia (tanya dev: UAT asli oleh business user, atau waiver seperti 18→19).
+**✔️ Step 10 selesai (2026-09-24):** 6 skenario live Playwright, semua `[DIKONFIRMASI]` Pass. **✔️ Step 11 ditutup via WAIVER dev (2026-09-24, "lanjut step 11 pakai waiver seperti 18→19")** — `11_uat/11_UAT_CHECKLIST.md`: T-01..T-05 "Waived — diterima dari Step 9/10", PM/FA/User kosong. **Migrasi 19.0→20.0 SELESAI (11/11).** Sisa terbuka: MF-02 (tampilan belum dilihat mata manusia), `MIGRATION_CLOSED.md` belum ditulis (butuh sign-off penuh, sama seperti 18→19), belum di-push.
 
 Ringkasan hasil:
 - Perubahan kode: manifest `20.0.1.0`; `get_param`→`get_bool` di `_compute_is_automated_probability` & `_compute_show_probability` (DIFF-01 kritis: `get_param`/`set_param` dihapus di 20.0; DIFF-02: OFF kini disimpan `'False'`, jadi `get_str` akan membalik toggle); test disesuaikan + 1 test baru (AC-01-05); README versi; `docker-env/` baru untuk 20.0 (source-run `odoo20`, port 8179) + `run-test.sh`.
@@ -145,7 +145,7 @@ Ringkasan cepat — detail lengkap tiap step ada di field `Status:` di header ma
 | 8 | Code Review | `08_CODE_REVIEW.md` | ✔️ Selesai 2026-09-24 (skill odoo-review; 0 🔴 0 🟡 5 🔵) | ✔️ Lulus |
 | 9 | Dev Testing | `09_DEV_TESTING.md` | ✔️ Selesai 2026-09-24 (+ MF-04 `compute=None`, MF-05 tour fix; 5/5 run 16 tests 0 failed) | ✔️ Lulus |
 | 10 | QA Testing | `10_BUSINESS_FLOW_MIGRATION.md` | ✔️ Selesai 2026-09-24 (6 skenario live Playwright, semua [DIKONFIRMASI] Pass) | ✔️ Lulus |
-| 11 | UAT Sign-off | `11_UAT_CHECKLIST.md` | ⬜ Belum mulai | — |
+| 11 | UAT Sign-off | `11_UAT_CHECKLIST.md` | ✔️ Selesai 2026-09-24 — ditutup via WAIVER dev (bukan UAT business user) | ✔️ Lulus (waiver) |
 
 Legenda status: ⬜ Belum mulai · 🔄 Sedang dikerjakan · ✅ Draft/selesai ditulis · ✔️ Disetujui/lulus gate.
 
