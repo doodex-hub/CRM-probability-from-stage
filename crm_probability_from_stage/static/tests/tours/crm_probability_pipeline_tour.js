@@ -20,7 +20,10 @@ registry.category("web_tour.tours").add("crm_probability_pipeline_tour", {
             run: "click",
         },
         {
-            trigger: ".o-kanban-button-new",
+            // Wait for the kanban renderer before clicking "New" (same guard as core crm_rainbowman):
+            // the control-panel button exists before the kanban is ready, and an early click never
+            // opens the quick-create form (MF-05, ~30% false-fail on 20.0).
+            trigger: "body:has(.o_kanban_renderer) .o-kanban-button-new",
             content: "Create a new opportunity via kanban quick-create",
             run: "click",
         },

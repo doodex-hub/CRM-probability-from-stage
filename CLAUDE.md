@@ -124,7 +124,7 @@ Ringkasan hasil:
 - Perubahan kode: manifest `20.0.1.0`; `get_param`→`get_bool` di `_compute_is_automated_probability` & `_compute_show_probability` (DIFF-01 kritis: `get_param`/`set_param` dihapus di 20.0; DIFF-02: OFF kini disimpan `'False'`, jadi `get_str` akan membalik toggle); test disesuaikan + 1 test baru (AC-01-05); README versi; `docker-env/` baru untuk 20.0 (source-run `odoo20`, port 8179) + `run-test.sh`.
 - Step 9: `./run-test.sh odoo_target target_db crm_probability_from_stage` → 16 tests, 0 failed, 0 error. Kontrol negatif membuktikan test menangkap DIFF-01/02.
 - Untuk Step 10: WAJIB buka **form opportunity** + **form stage** (toggle ON & OFF) — tour kanban/list/settings terbukti tidak memicu compute yang rusak di 19.0-code. Screenshot form stage (field Probability pindah ke grup pertama, DIFF-05) + Settings (MF-02).
-- FINDINGS terbuka untuk dev: MF-01 (aset store tidak di-port), MF-02 (visual → Step 10), MF-04 (warning ORM compute+related, default tidak diubah). MF-03 resolved (`get_bool`).
+- FINDINGS: MF-01 resolved (dev OK aset store tidak di-port), MF-03 resolved (`get_bool`), MF-04 resolved (dev pilih `compute=None`, warning hilang), MF-05 resolved (pipeline tour flaky → trigger `body:has(.o_kanban_renderer)`, 5/5 run PASS). Masih terbuka: MF-02 (visual → Step 10).
 - Step 10 server interaktif: lihat komentar di `docker-env/docker-compose.yml` (`docker compose run --rm --service-ports ...`, `--http-interface=0.0.0.0`).
 
 > AI: update bagian ini sendiri di akhir tiap sesi kerja, supaya sesi berikutnya tahu persis harus lanjut dari mana tanpa tanya ulang ke user.
@@ -143,7 +143,7 @@ Ringkasan cepat — detail lengkap tiap step ada di field `Status:` di header ma
 | 6 | Code Migration | kode `crm_probability_from_stage/` + `06c_IMPLEMENTATION_LOG.md` | ✅ Selesai 2026-09-24 (G1 PASS, G2 14/14 PASS, 2 kontrol negatif merah) | — (disiplin per-fase A1→G2) |
 | 7 | Data Migration Scripts | `07_DATA_MIGRATION_PLAN.md` + script — cuma kalau upgrade instance | N/A (port kode saja, intake §3) | — |
 | 8 | Code Review | `08_CODE_REVIEW.md` | ✔️ Selesai 2026-09-24 (skill odoo-review; 0 🔴 0 🟡 5 🔵) | ✔️ Lulus |
-| 9 | Dev Testing | `09_DEV_TESTING.md` | ⚠️ Dibuka ulang 2026-09-24 — pipeline tour flaky (MF-05), unit test PASS | ⏳ Menunggu keputusan MF-05 |
+| 9 | Dev Testing | `09_DEV_TESTING.md` | ✔️ Selesai 2026-09-24 (+ MF-04 `compute=None`, MF-05 tour fix; 5/5 run 16 tests 0 failed) | ✔️ Lulus |
 | 10 | QA Testing | `10_BUSINESS_FLOW_MIGRATION.md` | ⏸️ Siap mulai — MENUNGGU SLOT dari dev (batas konkurensi Step 10, MF-46) | — |
 | 11 | UAT Sign-off | `11_UAT_CHECKLIST.md` | ⬜ Belum mulai | — |
 

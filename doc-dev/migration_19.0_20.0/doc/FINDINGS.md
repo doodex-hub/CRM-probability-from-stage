@@ -18,7 +18,7 @@
 | MF-02 | Baseline visual 19.0 belum pernah diverifikasi mata manusia (gate 11 18→19 via waiver) | 1 | `[DIWARISI-SOURCE]` | Sedang | 🟡 OPEN — diteruskan ke Step 10 |
 | MF-03 | `get_param`/`set_param` dihapus di 20.0 — pengganti `get_bool` mengubah tafsiran nilai toggle non-kanonik yang diisi manual | 2 | `[GAP-MIGRASI]` | Rendah | ✅ RESOLVED (keputusan AI, rekomendasi berisiko rendah) — pakai `get_bool`; dev boleh koreksi. Bukti: kontrol negatif Step 6 |
 | MF-04 | Warning ORM 20.0 "Field crm.lead.probability is both compute and related" di tiap registry load | 6 | `[GAP-MIGRASI]` | Rendah | ✅ RESOLVED 2026-09-24 — dev pilih opsi 2: `compute=None` ditambahkan, warning hilang |
-| MF-05 | Tour `crm_probability_pipeline_tour` flaky di 20.0 (race klik "New" sebelum kanban siap) | 9 (rerun) | `[GAP-MIGRASI]` | Sedang | 🟡 OPEN — menunggu keputusan dev (usulan: trigger pola core `body:has(.o_kanban_renderer)`) |
+| MF-05 | Tour `crm_probability_pipeline_tour` flaky di 20.0 (race klik "New" sebelum kanban siap) | 9 (rerun) | `[GAP-MIGRASI]` | Sedang | ✅ RESOLVED 2026-09-24 — trigger pola core diterapkan, 5/5 run PASS |
 
 ---
 
@@ -76,7 +76,8 @@
 **Deskripsi:** Total 10 run di 20.0: 7 PASS, 3 FAIL, semua gagal di step 4 (`.o_field_widget[name=name] input` tidak ditemukan dalam 10 detik). Timing log: di run gagal tombol "New" diklik ±0,02–0,07 dtk setelah `web_read_group` kanban kembali, dan view quick-create tidak pernah dimuat; di run lolos jedanya ±0,2–0,3 dtk. Tombol "New" di control panel sudah ada sebelum renderer kanban siap. Tour core `crm` 20.0 untuk alur yang sama (`crm/static/tests/tours/crm_rainbowman.js`) memakai trigger `body:has(.o_kanban_renderer) .o-kanban-button-new` untuk menunggu renderer.
 **Dampak:** Bukan bug modul/produk — test otomatis tidak stabil (±30% false-fail). Klaim Step 9 "4/4 PASS" ternyata kebetulan.
 **Rekomendasi:** ubah trigger step 3 ke pola core, lalu jalankan suite beberapa kali untuk membuktikan stabil.
-**Keputusan pemilik modul:** *(kosong)*
+**Keputusan pemilik modul:** YA perbaiki (kuncoro@doodex.net, 2026-09-24, via chat CLI). Diterapkan: step 3 trigger → `body:has(.o_kanban_renderer) .o-kanban-button-new` (`static/tests/tours/crm_probability_pipeline_tour.js`). Kode modul tidak disentuh.
+**Bukti:** 5 run berturut-turut (DB bersih tiap run, `run-test.sh`) → 5× `0 failed, 0 error(s) of 16 tests`, pipeline tour 11/11 step di tiap run, 0 warning compute+related. Log: `docker-env/logs/run-test_20260924_152221.log` … `_154242.log`.
 
 ---
 
