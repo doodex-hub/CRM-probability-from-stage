@@ -16,9 +16,9 @@
 | 7 — Data Migration Scripts | — | — | N/A (port kode saja) |
 | 8 — Code Review | 0 | 0 | idem |
 | 9 — Dev Testing | 0 | 0 | idem |
-| 10 — QA Testing | | | Menunggu slot dari dev (STOP wajib atas instruksi kickoff) |
+| 10 — QA Testing | 1 | 0 | "lanjut step 10" (slot dari dev) |
 | 11 — UAT Sign-off | | | |
-| **Total** | 1 | 0 | |
+| **Total** | 2 | 0 | Prompt keputusan MF-01/MF-04/MF-05 + status tidak dihitung terpisah (konten, bukan tool-fix) |
 
 ## Catatan Definisi
 

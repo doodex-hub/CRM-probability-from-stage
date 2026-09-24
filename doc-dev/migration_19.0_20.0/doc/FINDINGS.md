@@ -15,7 +15,7 @@
 | ID | Judul | Ditemukan di Step | Tag | Prioritas | Status |
 |---|---|---|---|---|---|
 | MF-01 | Aset App Store di branch rilis `19.0` tidak ada di `migration/19.0` | 1 | `[PERLU-KEPUTUSAN]` | Rendah | ✅ RESOLVED 2026-09-24 — dev setuju: tidak di-port di migrasi ini |
-| MF-02 | Baseline visual 19.0 belum pernah diverifikasi mata manusia (gate 11 18→19 via waiver) | 1 | `[DIWARISI-SOURCE]` | Sedang | 🟡 OPEN — diteruskan ke Step 10 |
+| MF-02 | Baseline visual 19.0 belum pernah diverifikasi mata manusia (gate 11 18→19 via waiver) | 1 | `[DIWARISI-SOURCE]` | Sedang | 🟢 Sebagian — terverifikasi live AI (screenshot Step 10); mata manusia tetap di Step 11 |
 | MF-03 | `get_param`/`set_param` dihapus di 20.0 — pengganti `get_bool` mengubah tafsiran nilai toggle non-kanonik yang diisi manual | 2 | `[GAP-MIGRASI]` | Rendah | ✅ RESOLVED (keputusan AI, rekomendasi berisiko rendah) — pakai `get_bool`; dev boleh koreksi. Bukti: kontrol negatif Step 6 |
 | MF-04 | Warning ORM 20.0 "Field crm.lead.probability is both compute and related" di tiap registry load | 6 | `[GAP-MIGRASI]` | Rendah | ✅ RESOLVED 2026-09-24 — dev pilih opsi 2: `compute=None` ditambahkan, warning hilang |
 | MF-05 | Tour `crm_probability_pipeline_tour` flaky di 20.0 (race klik "New" sebelum kanban siap) | 9 (rerun) | `[GAP-MIGRASI]` | Sedang | ✅ RESOLVED 2026-09-24 — trigger pola core diterapkan, 5/5 run PASS |
@@ -41,6 +41,7 @@
 **Deskripsi:** Gate 11 migrasi 18→19 ditutup lewat waiver eksplisit dev, bukan UAT business user. Posisi field "Probability" di form stage (pindah ke grup kedua di 19.0) dan baris setting di Settings → CRM hanya pernah dibuktikan lewat Tour/unit test, tidak pernah dilihat manusia.
 **Dampak:** Kalau ada regresi visual yang sudah terjadi di 19.0, 20.0 akan mewarisinya tanpa terdeteksi. Di 20.0 form stage berubah lagi (DIFF-05) — lihat `02_DIFF_ANALYSIS.md`.
 **Rekomendasi:** Step 10 wajib memasukkan verifikasi visual live form stage + Settings (screenshot) — bukan `[HASIL-BACA-MURNI]`.
+**Update Step 10 (2026-09-24):** form stage (toggle ON dan OFF) + baris Settings diverifikasi live via Playwright MCP dengan screenshot (`10_qa/screenshots/S01_*`, `S02_*`, `S03_*`, `S06_*`). Tata letak 20.0 rapi: Probability di grup pertama sebelum "Is Won Stage?" (DIFF-05), setting di block kedua CRM (DIFF-08). Yang belum: dilihat langsung oleh manusia/business user → Step 11.
 **Keputusan pemilik modul:** *(kosong)*
 
 ### MF-03 — `get_param`/`set_param` dihapus di 20.0; pengganti `get_bool` mengubah tafsiran nilai non-kanonik
