@@ -110,4 +110,4 @@ Stakeholder diminta mengonfirmasi sadar & menerima (dari `03_MIGRATION_SPEC.md` 
 
 ## Penutupan Migrasi
 
-- [ ] `doc/MIGRATION_CLOSED.md` **belum ditulis** — template mensyaratkan sign-off semua role terisi; di sini hanya waiver (PM/FA/User kosong). Sama dengan 18→19 (juga tidak menulisnya). Konsekuensi: deteksi hotfix otomatis (`HOTFIX_REVIEW.md`) belum punya titik-nol. Kalau dev ingin menutup siklus secara formal atas dasar waiver, `MIGRATION_CLOSED.md` bisa ditulis dengan SHA HEAD `migration/20.0` saat itu.
+- [x] `doc/MIGRATION_CLOSED.md` ditulis 2026-09-24 atas instruksi eksplisit dev, atas dasar WAIVER (bukan sign-off penuh — PM/FA/User tetap kosong). SHA titik-nol: `b2aa141` (commit gate Step 11), branch `migration/20.0`.
