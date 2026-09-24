@@ -16,6 +16,7 @@
 |---|---|---|---|---|---|
 | MF-01 | Aset App Store di branch rilis `19.0` tidak ada di `migration/19.0` | 1 | `[PERLU-KEPUTUSAN]` | Rendah | 🟡 OPEN — default AI: tidak di-port di migrasi ini |
 | MF-02 | Baseline visual 19.0 belum pernah diverifikasi mata manusia (gate 11 18→19 via waiver) | 1 | `[DIWARISI-SOURCE]` | Sedang | 🟡 OPEN — diteruskan ke Step 10 |
+| MF-03 | `get_param`/`set_param` dihapus di 20.0 — pengganti `get_bool` mengubah tafsiran nilai toggle non-kanonik yang diisi manual | 2 | `[GAP-MIGRASI]` | Rendah | ✅ RESOLVED (keputusan AI, rekomendasi berisiko rendah) — pakai `get_bool`; dev boleh koreksi |
 
 ---
 
@@ -39,6 +40,18 @@
 **Dampak:** Kalau ada regresi visual yang sudah terjadi di 19.0, 20.0 akan mewarisinya tanpa terdeteksi. Di 20.0 form stage berubah lagi (DIFF-05) — lihat `02_DIFF_ANALYSIS.md`.
 **Rekomendasi:** Step 10 wajib memasukkan verifikasi visual live form stage + Settings (screenshot) — bukan `[HASIL-BACA-MURNI]`.
 **Keputusan pemilik modul:** *(kosong)*
+
+### MF-03 — `get_param`/`set_param` dihapus di 20.0; pengganti `get_bool` mengubah tafsiran nilai non-kanonik
+**Ditemukan di:** Step 2 (2026-09-24)
+**Tag:** `[GAP-MIGRASI]`
+**Ref:** `DIFF-01`, `DIFF-02` (`02_DIFF_ANALYSIS.md`); `BSL-001`, `BSL-004`, `BSL-009`.
+**Lokasi:** `models/crm_lead.py:27`, `models/crm_stage.py:16`, `tests/test_crm_probability_from_stage.py:20,40,44`, `tests/test_crm_probability_tour.py:26`.
+**Deskripsi:** API `get_param`/`set_param` tidak ada di 20.0 (wajib ganti). Ada dua pengganti yang "kelihatan" mungkin:
+1) `get_str(key)` + truthiness string (paling mirip sintaks lama) — **SALAH**: Settings 20.0 menyimpan OFF sebagai `'False'` (truthy) → toggle OFF tidak pernah bekerja.
+2) `get_bool(key)` — `'True'`→True, `'False'`/tidak ada→False. **Identik 19.0 untuk semua nilai yang bisa dihasilkan UI Settings.** Satu-satunya beda: nilai yang diisi manual lewat System Parameters (`'0'`, `'no'`, `'off'`, `'abc'`) — 19.0 menganggap ON (string tak kosong), 20.0 `get_bool` menganggap OFF (`'abc'` + warning log). Checkbox Settings 20.0 sendiri membaca dengan `get_bool`, jadi opsi 2 juga membuat modul konsisten dengan apa yang ditampilkan checkbox.
+**Dampak:** Opsi 1 = regresi fitur inti. Opsi 2 = beda hanya di edge case non-UI yang di 19.0 pun sudah tidak konsisten dengan checkbox (checkbox 19.0 akan tampil ter-centang untuk `'0'` juga, jadi di 19.0 konsisten; di 20.0 checkbox tampil tidak ter-centang untuk `'0'` dan modul ikut OFF — tetap konsisten satu sama lain).
+**Rekomendasi (dipakai):** opsi 2 `get_bool` — preseden core (`crm.lead.auto.assignment` dimigrasikan persis begini di `odoo20/addons/crm/models/crm_lead.py:2043`). Keputusan teknis berisiko rendah dengan satu opsi jelas lebih aman → diputuskan AI tanpa berhenti (USAGE_GUIDE "Eksekusi Berkelanjutan"), didokumentasikan di `03_MIGRATION_SPEC.md`.
+**Keputusan pemilik modul:** *(kosong — boleh koreksi)*
 
 ---
 
