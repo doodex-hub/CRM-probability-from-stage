@@ -6,12 +6,25 @@ class CrmLead(models.Model):
     _inherit = 'crm.lead'
 
 
-    # 20.0: compute=None drops the core compute inherited from crm, which the ORM discards anyway
-    # for related fields (it now warns "both compute and related"). Same behavior as 19.0.
+    # Computed from the stage (not related): a related field with readonly=False writes every change
+    # back to crm.stage (Mark as Lost, manual edit, ...), altering all leads of the stage and failing
+    # with an AccessError for users who cannot write on stages.
     probability = fields.Float(
-        'Probability', aggregator="avg", copy=False, compute=None,
-        related='stage_id.probability', readonly=False, store=True, depends=['stage_id.probability'])
+        'Probability', aggregator="avg", copy=False,
+        compute='_compute_probability_from_stage', readonly=False, store=True)
     revenue_probability = fields.Float('Probability Revenue', default=0.0, store=True, compute="_compute_revenue_probability")
+
+
+    def _get_stage_probability(self):
+        """Probability a lead takes from its stage; a Won stage always means 100 (core requires it)."""
+        self.ensure_one()
+        return 100.0 if self.stage_id.is_won else self.stage_id.probability
+
+
+    @api.depends('stage_id.probability', 'stage_id.is_won')
+    def _compute_probability_from_stage(self):
+        for lead in self:
+            lead.probability = lead._get_stage_probability()
 
 
     @api.depends('stage_id', 'probability', 'expected_revenue', 'partner_id')
@@ -47,5 +60,5 @@ class CrmLead(models.Model):
                 if was_automated:
                     lead.probability = lead.automated_probability
                 else:
-                    lead.probability = lead.stage_id.probability
+                    lead.probability = lead._get_stage_probability()
     
